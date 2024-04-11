@@ -36,33 +36,33 @@
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 12%; /* Darkest Gray */
+    --foreground: 0 0% 100%; /* White */
 
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 15%; /* Slightly lighter dark gray */
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 15%; /* Same as card */
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+    --primary: 0 0% 10%; /* Medium Gray */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 15%; /* Darker Gray */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
+    --muted: 0 0% 6%; /* Very Dark Gray */
+    --muted-foreground: 0 0% 100%;
 
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 0 0% 15%; /* Same as primary, customize as needed */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 100% 50%; /* Red (example, customize as needed) */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    --border: 220 10% 18%; /* Same as secondary */
+    --input: 220 10% 12%; /* Very Dark Gray */
+    --ring: 220 10% 20%; /* Medium Gray */
   }
 }
 
