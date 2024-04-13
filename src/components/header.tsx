@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ConsoleStore } from "@/stores/console";
+import { EditorStore } from "@/stores/editor";
 import {
   DownloadIcon,
   FileTextIcon,
@@ -34,7 +36,16 @@ export function Header() {
           </div>
         </SheetContent>
       </Sheet>
-      <Button>
+      <Button
+        onClick={() => {
+          const { clear, onOpenChange } = ConsoleStore.getState();
+          const { runCode } = EditorStore.getState();
+
+          clear();
+          onOpenChange(true);
+          runCode();
+        }}
+      >
         <PlayIcon />
       </Button>
     </div>

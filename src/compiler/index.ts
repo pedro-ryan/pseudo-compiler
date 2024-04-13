@@ -1,15 +1,19 @@
 import { generator } from "@/compiler/generator";
 import { transform } from "@/compiler/transform";
+import { ConsoleStore } from "@/stores/console";
 import { lexer, parser } from "./parser";
 import "./parsers/loadParsers";
 
 export const Logger = (log: unknown) => {
+  const { log: Log } = ConsoleStore.getState();
   if (typeof log === "object") {
-    console.log(JSON.stringify(log, null, 2));
-  } else {
-    console.log(log);
+    const ObjectString = JSON.stringify(log, null, 2);
+    Log(ObjectString);
+    return console.log(ObjectString);
   }
-  // TODO log in integrated console
+
+  Log(String(log));
+  console.log(log);
 };
 
 export function runner(code: string) {

@@ -1,6 +1,7 @@
+import { EditorStore } from "@/stores/editor";
+import { tags as t } from "@lezer/highlight";
 import createTheme from "@uiw/codemirror-themes";
-import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
-import { useCallback, useState } from "react";
+import CodeMirror from "@uiw/react-codemirror";
 
 const editorTheme = createTheme({
   theme: "dark",
@@ -10,16 +11,11 @@ const editorTheme = createTheme({
     gutterForeground: "#555555",
     gutterActiveForeground: "#FFFFFF",
   },
-  styles: [],
+  styles: [{ tag: t.moduleKeyword, color: "#f71818" }],
 });
 
 export function Editor() {
-  const [value, setValue] = useState("console.log('hello world!');");
-  const onChange = useCallback((val: string, viewUpdate: ViewUpdate) => {
-    console.log("val:", val);
-    console.log(viewUpdate);
-    setValue(val);
-  }, []);
+  const value = EditorStore((state) => state.value);
 
   return (
     <div className="overflow-hidden h-full">
@@ -28,7 +24,7 @@ export function Editor() {
         className="h-full"
         theme={editorTheme}
         height="100%"
-        onChange={onChange}
+        onChange={EditorStore.getState().onChange}
       />
     </div>
   );
