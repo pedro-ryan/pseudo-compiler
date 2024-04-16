@@ -33,6 +33,7 @@ export function Footer() {
             return (
               <p
                 key={`${index}_${new Date().getTime()}`}
+                className={log.type === "error" ? "text-destructive" : ""}
               >
                 {log.value}
               </p>
