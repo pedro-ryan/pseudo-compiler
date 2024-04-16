@@ -12,6 +12,9 @@
     "prepare": "lezer-generator src/compiler/grammars/index.grammar -o src/compiler/parser/parser.js"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.16.0",
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/lint": "^6.5.0",
     "@lezer/common": "^1.2.1",
     "@lezer/highlight": "^1.2.0",
     "@lezer/lr": "^1.4.0",
