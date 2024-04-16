@@ -56,17 +56,24 @@ export type AstValue =
 
 export type ModifiedAst = ModifiedExpression[];
 
-export type ModifiedExpression = TCallExpression | TFunctionDeclaration;
+export type ModifiedExpression = TCallExpression | TFunctionDeclaration | Code;
+
+export type Code = {
+  name: "Code";
+  body: ModifiedAst;
+};
 
 export type TCallExpression = {
-  keyword: string;
+  call: "Logger";
   args: CallExpressionArgs;
+};
+
+export type FunctionDeclarationArgs = {
+  name: string;
 };
 
 export type TFunctionDeclaration = {
   keyword: "function";
-  args: {
-    name: string;
-  };
+  args: FunctionDeclarationArgs;
   body: ModifiedAst;
 };

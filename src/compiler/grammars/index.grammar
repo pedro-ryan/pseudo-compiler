@@ -1,0 +1,38 @@
+@top AlgorithmFile { AlgoritmoDeclaration+ }
+
+@skip { space | LineComment }
+
+@precedence {
+  statement @cut
+}
+
+statement[@isGroup=Statement] {
+  EscrevaStatement
+}
+
+AlgoritmoDeclaration { 
+  kw<"Algoritmo"> Identifier BlockAlgoritmo
+}
+
+BlockAlgoritmo {
+  kw<"Inicio"> statement* kw<"Fim">
+}
+
+EscrevaStatement {
+  kw<"Escreva"> StringLiteral
+}
+
+kw<term> { @specialize[@name={term}]<Identifier, term> }
+
+@tokens {
+  Identifier { identifierChar (identifierChar | @digit)* }
+  identifierChar { @asciiLetter | $[_$\u{a1}-\u{10ffff}] }
+  StringLiteral {
+    '"' (![\\\n"] | "\\" _)* '"'
+  }
+  LineComment { "//" ![\n]* }
+  space { $[ \t\n\r]+ }
+  // Number { @digit+ }
+  // Float { @digit+ "." @digit+ }
+  // Boolean { "Verdadeiro" | "Falso" }
+}

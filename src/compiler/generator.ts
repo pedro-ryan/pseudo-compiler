@@ -1,14 +1,19 @@
-import { ModifiedAst, TFunctionDeclaration } from "@/compiler/interfaces";
+import { ModifiedAst } from "@/compiler/interfaces";
 
 export function generator(AST: ModifiedAst) {
   function gen(obj: ModifiedAst) {
     let code = "";
 
     while (obj.length > 0) {
-      let current = obj.shift();
+      const current = obj.shift();
       if (!current) return;
 
-      if (Array.isArray(current.args)) {
+      if ("name" in current) {
+        code += gen(current.body);
+        continue;
+      }
+
+      if ("call" in current) {
         const args = current.args
           .map((v) => {
             if (v.type === "String") {
@@ -18,12 +23,11 @@ export function generator(AST: ModifiedAst) {
           })
           .join(",");
 
-        code += ` this.${current.keyword}(${args})\n`;
+        code += ` this.${current.call}(${args})\n`;
         continue;
       }
 
-      if (current.keyword === "function") {
-        current = current as TFunctionDeclaration;
+      if ("keyword" in current && current.keyword === "function") {
         code += `${current.keyword} ${current.args.name}() {\n`;
         code += gen(current.body);
         code += "}\n";
