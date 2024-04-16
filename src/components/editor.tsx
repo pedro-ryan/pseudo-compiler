@@ -13,7 +13,24 @@ const editorTheme = createTheme({
     gutterForeground: "#555555",
     gutterActiveForeground: "#FFFFFF",
   },
-  styles: [{ tag: t.moduleKeyword, color: "#f71818" }],
+  styles: [
+    {
+      tag: t.keyword,
+      color: "#f97583",
+    },
+    {
+      tag: t.brace,
+      color: "#d16ccd",
+    },
+    {
+      tag: t.lineComment,
+      color: "#6b737c",
+    },
+    {
+      tag: t.string,
+      color: "#ffab70",
+    },
+  ],
 });
 
 export function Editor() {
