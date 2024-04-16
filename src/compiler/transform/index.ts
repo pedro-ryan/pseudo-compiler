@@ -53,7 +53,7 @@ function generateValue(
   if (["StringLiteral", "Identifier"].includes(node.name)) {
     let value: ValueType = {
       type: "String",
-      value: code.slice(node.from, node.to).replaceAll('"', ""),
+      value: code.slice(node.from, node.to).replaceAll(/(^["])|(["])$/g, ""),
     };
 
     if (node.name == "Identifier") {
