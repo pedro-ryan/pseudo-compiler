@@ -31,7 +31,10 @@ export function Footer() {
         <div className="bg-muted h-[50vh] transition-all p-4 overflow-auto">
           {logs.map((log) => {
             return (
-              <p className={log.type === "error" ? "text-destructive" : ""}>
+              <p
+                key={new Date().getTime()}
+                className={log.type === "error" ? "text-destructive" : ""}
+              >
                 {log.value}
               </p>
             );
