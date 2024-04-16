@@ -29,11 +29,10 @@ export function Footer() {
       </div>
       <CollapsibleContent className="transition-all ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=closed]:slide-out-to-bottom">
         <div className="bg-muted h-[50vh] transition-all p-4 overflow-auto">
-          {logs.map((log) => {
+          {logs.map((log, index) => {
             return (
               <p
-                key={new Date().getTime()}
-                className={log.type === "error" ? "text-destructive" : ""}
+                key={`${index}_${new Date().getTime()}`}
               >
                 {log.value}
               </p>
