@@ -1,7 +1,8 @@
 import { runner } from "@/compiler";
 import { generator } from "@/compiler/generator";
-import { lexer, parser } from "@/compiler/parser";
-import { transform } from "@/compiler/transform";
+import { parser } from "@/compiler/parser";
+import { transform } from "@/compiler/transform/index";
+import { ConsoleStore } from "@/stores/console";
 import { ViewUpdate } from "@uiw/react-codemirror";
 import { create } from "zustand";
 
@@ -19,28 +20,35 @@ const EditorStore = create<IEditorStore>((set, get) => ({
     console.log("val:", newValue);
 
     set({ value: newValue });
-
-    const LEXER = lexer(newValue);
-
-    const PARSER = parser(LEXER);
-    console.log(PARSER);
-
-    const TRANSFORM = transform(PARSER);
-    console.log(TRANSFORM);
-
-    const GENERATOR = generator(TRANSFORM);
-    console.log(GENERATOR);
-
-    if (!GENERATOR) {
-      throw "Não foi possível compilar seu código, verifique se não tem nenhum erro";
-    }
-
-    set({ code: GENERATOR });
   },
   runCode() {
-    const { code } = get();
+    const { value } = get();
 
-    runner(code);
+    if (!value) {
+      return;
+    }
+
+    const Transform = transform(parser.parse(value), value);
+    console.log(JSON.stringify(Transform, null, 2));
+
+    const code = generator(Transform);
+    console.log(code);
+
+    if (!code) {
+      ConsoleStore.getState().error(
+        "Não foi possível COMPILAR seu código, verifique se não tem nenhum erro"
+      );
+      return;
+    }
+
+    try {
+      runner(code);
+    } catch (err) {
+      console.error(err);
+      ConsoleStore.getState().error(
+        "Não foi possível EXECUTAR seu código, verifique se não tem nenhum erro"
+      );
+    }
   },
 }));
 
