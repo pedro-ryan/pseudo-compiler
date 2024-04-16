@@ -6,6 +6,7 @@ import CodeMirror from "@uiw/react-codemirror";
 const editorTheme = createTheme({
   theme: "dark",
   settings: {
+    fontFamily: "JetBrains Mono, monospace",
     caret: "#FFFFFF",
     gutterBackground: "#FFFFFF00",
     gutterForeground: "#555555",
