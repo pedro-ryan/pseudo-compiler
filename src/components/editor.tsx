@@ -1,3 +1,4 @@
+import { AlgorithmLanguage } from "@/compiler/language";
 import { EditorStore } from "@/stores/editor";
 import { tags as t } from "@lezer/highlight";
 import createTheme from "@uiw/codemirror-themes";
@@ -25,6 +26,7 @@ export function Editor() {
         className="h-full"
         theme={editorTheme}
         height="100%"
+        extensions={[AlgorithmLanguage]}
         onChange={EditorStore.getState().onChange}
       />
     </div>
