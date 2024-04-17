@@ -8,6 +8,7 @@ import { LRLanguage, LanguageSupport, syntaxTree } from "@codemirror/language";
 import { Diagnostic, linter } from "@codemirror/lint";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
 import { styleTags, tags as t } from "@lezer/highlight";
+import { getInfo } from "./descriptions";
 
 function isCompletionContext(
   context: SyntaxNode | CompletionContext
@@ -41,7 +42,7 @@ function AutoComplete(context: CompletionContext): CompletionResult | null {
     options.push({
       label: "Algoritmo",
       type: "keyword",
-      info: "Palavra-chave utilizada para iniciar a estrutura de um algoritmo deve ser precedia de um nome em snake_case, por exemplo: Algoritmo exemplo_de_nome",
+      info: getInfo("Algoritmo"),
     });
   }
 
@@ -49,6 +50,8 @@ function AutoComplete(context: CompletionContext): CompletionResult | null {
     options = [
       {
         label: "Escreva",
+        type: "function",
+        info: getInfo("Escreva"),
       },
     ];
   }
@@ -62,19 +65,23 @@ function AutoComplete(context: CompletionContext): CompletionResult | null {
       {
         label: "Inicio",
         type: "keyword",
+        info: getInfo("Inicio"),
       },
       {
         label: "Fim",
         type: "keyword",
+        info: getInfo("Fim"),
       },
       {
         label: "Var",
         type: "keyword",
+        info: getInfo("Var"),
       },
       {
         label: "Bloco Algoritmo",
         type: "text",
         apply: "Inicio\n\nFim",
+        info: getInfo("BlocoAlgoritmo"),
       },
     ]);
   }
