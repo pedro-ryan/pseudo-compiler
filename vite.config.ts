@@ -6,18 +6,6 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   base: "/pseudo-compiler/",
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          language: ["@/compiler/language"],
-          generator: ["@/compiler/generator"],
-          transform: ["@/compiler/transform"],
-          parser: ["@/compiler/parser"],
-        },
-      },
-    },
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
