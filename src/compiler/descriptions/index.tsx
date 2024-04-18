@@ -4,12 +4,14 @@ import Markdown from "react-markdown";
 import Algoritmo from "./algoritmo.md?raw";
 import BlocoAlgoritmo from "./bloco-algoritmo.md?raw";
 import Escreva from "./escreva.md?raw";
+import Leia from "./leia.md?raw";
 import Var from "./var.md?raw";
 
 const descriptions = {
   Algoritmo,
   BlocoAlgoritmo,
   Escreva,
+  Leia,
   Var,
   Inicio: `Palavra-chave utilizada para abrir um bloco de um algoritmo`,
   Fim: `Palavra-chave utilizada para fechar um bloco de um algoritmo`,

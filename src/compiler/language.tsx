@@ -53,6 +53,11 @@ function AutoComplete(context: CompletionContext): CompletionResult | null {
         type: "function",
         info: getInfo("Escreva"),
       },
+      {
+        label: "Leia",
+        type: "function",
+        info: getInfo("Leia"),
+      },
     ];
   }
 
