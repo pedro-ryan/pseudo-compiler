@@ -12,6 +12,8 @@ export const Logger = (log: unknown) => {
 };
 
 export function runner(code: string) {
+  const Prompt = ConsoleStore.getState().prompt.execute;
+
   const codeRunner = new Function(code);
-  codeRunner.call({ Logger });
+  codeRunner.call({ Logger, Prompt });
 }

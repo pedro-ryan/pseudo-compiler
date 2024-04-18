@@ -8,11 +8,54 @@ interface IConsoleStore {
 
   opened: boolean;
   onOpenChange: (open: boolean) => void;
+
+  prompt: {
+    execute: () => Promise<string>;
+    respond: (response: string) => void;
+    response: string;
+    waiting: boolean;
+  };
 }
 
 const ConsoleStore = create<IConsoleStore>((set) => ({
   logs: [],
   opened: false,
+  prompt: {
+    execute() {
+      const resetResponse = (waiting = false) => {
+        set((state) => {
+          return {
+            prompt: {
+              ...state.prompt,
+              response: "",
+              waiting,
+            },
+          };
+        });
+      };
+      resetResponse(true);
+
+      return new Promise((resolve) => {
+        const unsubscribe = ConsoleStore.subscribe((state, oldState) => {
+          if (state.prompt.response !== oldState.prompt.response) {
+            resolve(state.prompt.response);
+            resetResponse();
+            unsubscribe();
+          }
+        });
+      });
+    },
+    respond(response) {
+      set((state) => ({
+        prompt: {
+          ...state.prompt,
+          response,
+        },
+      }));
+    },
+    response: "",
+    waiting: false,
+  },
   clear() {
     set({ logs: [] });
   },

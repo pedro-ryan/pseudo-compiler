@@ -28,7 +28,7 @@ export function generator(AST: ModifiedAst) {
       }
 
       if ("keyword" in current && current.keyword === "function") {
-        code += `${current.keyword} ${current.args.name}() {\n`;
+        code += `async function ${current.args.name}() {\n`;
         code += gen(current.body);
         code += "}\n";
 

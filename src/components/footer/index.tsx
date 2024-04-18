@@ -1,3 +1,4 @@
+import { Console } from "@/components/footer/console";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -7,8 +8,7 @@ import {
 import { ConsoleStore } from "@/stores/console";
 
 export function Footer() {
-  const [logs, open, onOpenChange] = ConsoleStore((state) => [
-    state.logs,
+  const [open, onOpenChange] = ConsoleStore((state) => [
     state.opened,
     state.onOpenChange,
   ]);
@@ -28,18 +28,7 @@ export function Footer() {
         </CollapsibleTrigger>
       </div>
       <CollapsibleContent className="transition-all ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=closed]:slide-out-to-bottom">
-        <div className="bg-muted h-[50vh] transition-all p-4 overflow-auto">
-          {logs.map((log, index) => {
-            return (
-              <p
-                key={`${index}_${new Date().getTime()}`}
-                className={log.type === "error" ? "text-destructive" : ""}
-              >
-                {log.value}
-              </p>
-            );
-          })}
-        </div>
+        <Console />
       </CollapsibleContent>
     </Collapsible>
   );
