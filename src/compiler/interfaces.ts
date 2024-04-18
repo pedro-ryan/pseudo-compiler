@@ -19,12 +19,13 @@ export type AstType =
   | "VariableDeclaration"
   | "CommentExpression"
   | "String"
+  | "Boolean"
   | "Number"
   | "Float"; // Number Alias
 
 export type GenericAst<
   T extends AstType | TokensTypes,
-  V extends string | number = string
+  V extends string | number | boolean = string
 > = {
   type: T;
   value: V;
@@ -51,6 +52,7 @@ export type AstValue =
   | GenericAst<"String">
   | GenericAst<"CommentExpression">
   | GenericAst<"Number" | "Float", number>
+  | GenericAst<"Boolean", boolean>
   | FunctionDeclaration
   | CallExpression;
 

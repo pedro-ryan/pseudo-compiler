@@ -12,9 +12,9 @@ statement[@isGroup=Statement] {
 }
 
 expression[@isGroup=Expression] {
+  StringLiteral |
   Number |
   Float |
-  Boolean |
   @specialize[@name=BooleanLiteral]<Identifier, "Verdadeiro" | "Falso">
 }
 
@@ -42,7 +42,7 @@ BlockAlgoritmo {
 }
 
 EscrevaStatement {
-  kw<"Escreva"> (StringLiteral | Identifier)
+  kw<"Escreva"> (expression | Identifier)
 }
 
 LeiaStatement {
@@ -62,4 +62,6 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
   space { $[ \t\n\r]+ }
   Number { @digit+ }
   Float { @digit+ "." @digit+ }
+
+  @precedence { Float, Number }
 }

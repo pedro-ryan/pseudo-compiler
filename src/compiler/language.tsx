@@ -169,7 +169,7 @@ const parserWithMetadata = parser.configure({
       LineComment: t.lineComment,
       Algoritmo: t.keyword, // Palavras-chave
       "Inicio Fim Var": t.brace,
-      Identifier: t.variableName, // Nomes de algoritmos e variáveis
+      "Identifier BooleanLiteral": t.variableName, // Nomes de algoritmos e variáveis
       StringLiteral: t.string, // Strings
       "Type!": t.typeName,
     }),

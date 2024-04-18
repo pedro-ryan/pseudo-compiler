@@ -21,6 +21,10 @@ function generateValue(
   code: string,
   { setIn, removeEntered, setPath }: GenerateValueActions
 ): ValueType | boolean {
+  const getText = () => {
+    return code.slice(node.from, node.to);
+  };
+
   if (["Algoritmo", "Inicio", "Fim", "Escreva", "Leia"].includes(node.name)) {
     // Skip
     return false;
@@ -57,10 +61,33 @@ function generateValue(
     };
   }
 
+  if (["Number", "Float"].includes(node.name)) {
+    setIn("args");
+    const stringNumber = getText();
+    const type = stringNumber.indexOf(".") > -1 ? "Float" : "Number";
+
+    const value =
+      type === "Float" ? parseFloat(stringNumber) : parseInt(stringNumber);
+
+    return {
+      type,
+      value,
+    };
+  }
+
+  if (node.name === "BooleanLiteral") {
+    setIn("args");
+    return {
+      type: "Boolean",
+      value: getText() === "Verdadeiro" ? true : false,
+    };
+  }
+
   if (["StringLiteral", "Identifier"].includes(node.name)) {
+    setIn("args");
     let value: ValueType = {
       type: "String",
-      value: code.slice(node.from, node.to).replaceAll(/(^["])|(["])$/g, ""),
+      value: getText().replaceAll(/(^["])|(["])$/g, ""),
     };
 
     if (node.name == "Identifier") {
@@ -68,7 +95,6 @@ function generateValue(
         name: value.value,
       };
     }
-    setIn("args");
     return value;
   }
 
