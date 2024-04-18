@@ -162,9 +162,10 @@ const parserWithMetadata = parser.configure({
     styleTags({
       LineComment: t.lineComment,
       Algoritmo: t.keyword, // Palavras-chave
-      "Inicio Fim": t.brace,
+      "Inicio Fim Var": t.brace,
       Identifier: t.variableName, // Nomes de algoritmos e variáveis
       StringLiteral: t.string, // Strings
+      "Type!": t.typeName,
     }),
   ],
 });

@@ -30,6 +30,14 @@ const editorTheme = createTheme({
       tag: t.string,
       color: "#ffab70",
     },
+    {
+      tag: t.typeName,
+      color: "#b392f0",
+    },
+    {
+      tag: t.variableName,
+      color: "#6b9fda",
+    },
   ],
 });
 

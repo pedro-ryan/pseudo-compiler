@@ -10,8 +10,30 @@ statement[@isGroup=Statement] {
   EscrevaStatement
 }
 
+expression[@isGroup=Expression] {
+  Number |
+  Float |
+  Boolean |
+  @specialize[@name=BooleanLiteral]<Identifier, "Verdadeiro" | "Falso">
+}
+
+Type {
+  kw<"Caractere"> |
+  kw<"Inteiro"> |
+  kw<"Real"> |
+  kw<"Logico">
+}
+
 AlgoritmoDeclaration { 
-  kw<"Algoritmo"> Identifier BlockAlgoritmo
+  kw<"Algoritmo"> Identifier VariableDeclaration? BlockAlgoritmo
+}
+
+VariableDeclaration {
+  kw<"Var"> (VariableDefinition)*
+}
+
+VariableDefinition {
+  Identifier ":" Type
 }
 
 BlockAlgoritmo {
@@ -27,12 +49,12 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
 @tokens {
   Identifier { identifierChar (identifierChar | @digit)* }
   identifierChar { @asciiLetter | $[_$\u{a1}-\u{10ffff}] }
+  PropertyName { Identifier }
   StringLiteral {
     '"' (![\\\n"] | "\\" _)* '"'
   }
   LineComment { "//" ![\n]* }
   space { $[ \t\n\r]+ }
-  // Number { @digit+ }
-  // Float { @digit+ "." @digit+ }
-  // Boolean { "Verdadeiro" | "Falso" }
+  Number { @digit+ }
+  Float { @digit+ "." @digit+ }
 }

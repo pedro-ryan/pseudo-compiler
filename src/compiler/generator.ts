@@ -35,6 +35,14 @@ export function generator(AST: ModifiedAst) {
         code += `${current.args.name}.call(this)\n`;
         continue;
       }
+
+      if ("keyword" in current && current.keyword === "let") {
+        const variables = current.args.map((v) => {
+          return v.name;
+        });
+
+        code += `let ${variables.join(",")};\n`;
+      }
     }
 
     return code;

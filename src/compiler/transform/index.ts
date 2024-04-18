@@ -1,13 +1,13 @@
 import {
   AstValue,
-  FunctionDeclarationArgs,
+  Identifier,
   ModifiedAst,
   ModifiedExpression,
 } from "@/compiler/interfaces";
 import { get, set } from "@/compiler/utils";
 import { SyntaxNodeRef, Tree } from "@lezer/common";
 
-type ValueType = ModifiedExpression | FunctionDeclarationArgs | AstValue;
+type ValueType = ModifiedExpression | Identifier | AstValue;
 
 type GenerateValueActions = {
   removeEntered: () => void;
@@ -26,7 +26,7 @@ function generateValue(
     return false;
   }
 
-  if (node.name == "BlockAlgoritmo") {
+  if (["BlockAlgoritmo", "Type", "VariableDefinition"].includes(node.name)) {
     // Skip but children add in parent
     removeEntered();
     return true;
@@ -47,6 +47,13 @@ function generateValue(
         name: "",
       },
       body: [],
+    };
+  }
+
+  if (node.name === "VariableDeclaration") {
+    return {
+      keyword: "let",
+      args: [],
     };
   }
 
