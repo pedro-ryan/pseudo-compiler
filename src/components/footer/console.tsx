@@ -39,6 +39,7 @@ export function Console() {
           </p>
         );
       })}
+      {!logs.length && waiting ? <PromptInput /> : null}
     </div>
   );
 }
