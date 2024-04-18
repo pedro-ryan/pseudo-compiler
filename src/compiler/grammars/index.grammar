@@ -42,7 +42,7 @@ BlockAlgoritmo {
 }
 
 EscrevaStatement {
-  kw<"Escreva"> StringLiteral
+  kw<"Escreva"> (StringLiteral | Identifier)
 }
 
 LeiaStatement {
