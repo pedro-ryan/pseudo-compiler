@@ -38,7 +38,7 @@ export type FunctionDeclaration = {
 };
 
 export type CallExpressionArgs = Array<
-  GenericAst<"String"> | GenericAst<"Number" | "Float", number>
+  GenericAst<"String"> | GenericAst<"Number" | "Float", number> | Identifier
 >;
 
 export type CallExpression = {
@@ -68,8 +68,10 @@ export type Code = {
 };
 
 export type TCallExpression = {
-  call: "Logger";
+  call: "Logger" | "Prompt";
   args: CallExpressionArgs;
+  async?: boolean;
+  assign?: boolean;
 };
 
 export type Identifier = {

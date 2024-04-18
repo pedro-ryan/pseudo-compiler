@@ -14,16 +14,22 @@ export function generator(AST: ModifiedAst) {
       }
 
       if ("call" in current) {
-        const args = current.args
-          .map((v) => {
-            if (v.type === "String") {
-              return `"${v.value}"`;
-            }
-            return v.value;
-          })
-          .join(",");
+        let args = current.args.map((v) => {
+          if ("name" in v) return v.name;
 
-        code += ` this.${current.call}(${args})\n`;
+          if (v.type === "String") {
+            return `"${v.value}"`;
+          }
+          return v.value;
+        });
+
+        if (current.assign) {
+          code += args.join(" = ") + " = ";
+          args = [];
+        }
+        if (current.async) code += "await ";
+
+        code += `this.${current.call}(${args.join(",")});\n`;
         continue;
       }
 
@@ -32,7 +38,7 @@ export function generator(AST: ModifiedAst) {
         code += gen(current.body);
         code += "}\n";
 
-        code += `${current.args.name}.call(this)\n`;
+        code += `${current.args.name}.call(this);\n`;
         continue;
       }
 

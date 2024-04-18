@@ -21,7 +21,7 @@ function generateValue(
   code: string,
   { setIn, removeEntered, setPath }: GenerateValueActions
 ): ValueType | boolean {
-  if (["Algoritmo", "Inicio", "Fim", "Escreva"].includes(node.name)) {
+  if (["Algoritmo", "Inicio", "Fim", "Escreva", "Leia"].includes(node.name)) {
     // Skip
     return false;
   }
@@ -72,7 +72,16 @@ function generateValue(
     return value;
   }
 
-  if (node.name.includes("Statement")) {
+  if (node.name.includes("Leia")) {
+    return {
+      call: "Prompt",
+      async: true,
+      assign: true,
+      args: [],
+    };
+  }
+
+  if (node.name.includes("Escreva")) {
     return {
       call: "Logger",
       args: [],
@@ -129,6 +138,7 @@ export function transform(tree: Tree, code: string) {
 
       console.log(
         JSON.stringify(block, null, 2),
+        node.name,
         JSON.stringify(newValue, null, 2),
         JSON.stringify(setPath)
       );
@@ -136,7 +146,7 @@ export function transform(tree: Tree, code: string) {
 
       if (!Array.isArray(newValue)) return false;
 
-      if (node.name == "StringLiteral") pathBack();
+      if (["StringLiteral", "Identifier"].includes(node.name)) pathBack();
 
       addInPath(newValue);
     },

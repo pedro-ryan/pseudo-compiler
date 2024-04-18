@@ -7,7 +7,8 @@
 }
 
 statement[@isGroup=Statement] {
-  EscrevaStatement
+  EscrevaStatement |
+  LeiaStatement
 }
 
 expression[@isGroup=Expression] {
@@ -42,6 +43,10 @@ BlockAlgoritmo {
 
 EscrevaStatement {
   kw<"Escreva"> StringLiteral
+}
+
+LeiaStatement {
+  kw<"Leia"> Identifier
 }
 
 kw<term> { @specialize[@name={term}]<Identifier, term> }
