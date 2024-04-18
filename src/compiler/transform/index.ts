@@ -72,7 +72,7 @@ function generateValue(
     };
   }
 
-  return {} as ValueType;
+  return false;
 }
 export function transform(tree: Tree, code: string) {
   const cursor = tree.cursor();
