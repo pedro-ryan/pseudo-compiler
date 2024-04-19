@@ -87,6 +87,6 @@ export type TFunctionDeclaration = {
 };
 
 export type VariableDeclaration = {
-  keyword: "let";
-  args: Identifier[];
+  keyword: "var";
+  body: { type: string; name: string }[];
 };

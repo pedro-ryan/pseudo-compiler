@@ -7,30 +7,38 @@ import {
 import { get, set } from "@/compiler/utils";
 import { SyntaxNodeRef, Tree } from "@lezer/common";
 
-type ValueType = ModifiedExpression | Identifier | AstValue;
+type ValueType =
+  | ModifiedExpression
+  | Identifier
+  | AstValue
+  | { name: string; type: string };
 
 type GenerateValueActions = {
   removeEntered: () => void;
   setIn: (newSetIn: string | string[]) => void;
   setPath: (newPath: (number | string)[]) => void;
+  childrenSkip: () => void;
   pathBack: () => void;
 };
 
 function generateValue(
   node: SyntaxNodeRef,
   code: string,
-  { setIn, removeEntered, setPath }: GenerateValueActions
+  { setIn, removeEntered, setPath, childrenSkip }: GenerateValueActions
 ): ValueType | boolean {
-  const getText = () => {
-    return code.slice(node.from, node.to);
+  const getText = (toGetNode?: SyntaxNodeRef) => {
+    const scopedNode = toGetNode ?? node;
+    return code.slice(scopedNode.from, scopedNode.to);
   };
+
+  const parentName = node.node.parent?.name ?? "";
 
   if (["Algoritmo", "Inicio", "Fim", "Escreva", "Leia"].includes(node.name)) {
     // Skip
     return false;
   }
 
-  if (["BlockAlgoritmo", "Type", "VariableDefinition"].includes(node.name)) {
+  if (["BlockAlgoritmo", "Type"].includes(node.name)) {
     // Skip but children add in parent
     removeEntered();
     return true;
@@ -55,14 +63,49 @@ function generateValue(
   }
 
   if (node.name === "VariableDeclaration") {
+    childrenSkip();
+    const Variables: { type: string; name: string }[] = [];
+
+    let variable = {
+      name: "",
+      type: "String",
+    };
+
+    node.node.cursor().iterate(
+      (child) => {
+        if (child.name === "Identifier") {
+          console.log(child.from, child.to);
+          variable.name = getText(child);
+          return false;
+        }
+
+        if (child.name === "Logico") {
+          variable.type = "Boolean";
+        }
+
+        if (["Inteiro", "Real"].includes(child.name)) {
+          variable.type = "Number";
+        }
+      },
+      (child) => {
+        if (child.name === "VariableDefinition") {
+          Variables.push(variable);
+          variable = {
+            name: "",
+            type: "String",
+          };
+        }
+      }
+    );
+
     return {
-      keyword: "let",
-      args: [],
+      keyword: "var",
+      body: Variables,
     };
   }
 
   if (["Number", "Float"].includes(node.name)) {
-    setIn("args");
+    if (parentName !== "VariableDefinition") setIn("args");
     const stringNumber = getText();
     const type = stringNumber.indexOf(".") > -1 ? "Float" : "Number";
 
@@ -76,7 +119,7 @@ function generateValue(
   }
 
   if (node.name === "BooleanLiteral") {
-    setIn("args");
+    if (parentName !== "VariableDefinition") setIn("args");
     return {
       type: "Boolean",
       value: getText() === "Verdadeiro" ? true : false,
@@ -84,7 +127,7 @@ function generateValue(
   }
 
   if (["StringLiteral", "Identifier"].includes(node.name)) {
-    setIn("args");
+    if (parentName !== "VariableDefinition") setIn("args");
     let value: ValueType = {
       type: "String",
       value: getText().replaceAll(/(^["])|(["])$/g, ""),
@@ -136,6 +179,7 @@ export function transform(tree: Tree, code: string) {
       entered.unshift(node.name);
       let value = {} as ValueType;
       let setIn: string | string[] = "body";
+      let skipChildren = false;
 
       const ValueGenerated = generateValue(node, code, {
         setIn: (newSetIn) => (setIn = newSetIn),
@@ -143,6 +187,9 @@ export function transform(tree: Tree, code: string) {
           entered.shift();
         },
         setPath: (newPath) => (path = newPath),
+        childrenSkip() {
+          skipChildren = true;
+        },
         pathBack,
       });
       if (typeof ValueGenerated === "boolean") return ValueGenerated;
@@ -170,7 +217,7 @@ export function transform(tree: Tree, code: string) {
       );
       set(block, setPath, newValue);
 
-      if (!Array.isArray(newValue)) return false;
+      if (!Array.isArray(newValue) || skipChildren) return false;
 
       if (["StringLiteral", "Identifier"].includes(node.name)) pathBack();
 
