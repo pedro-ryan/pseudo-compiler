@@ -126,7 +126,7 @@ function generateValue(
     };
   }
 
-  if (["StringLiteral", "Identifier"].includes(node.name)) {
+  if (["String", "Identifier"].includes(node.name)) {
     if (parentName !== "VariableDefinition") setIn("args");
     let value: ValueType = {
       type: "String",
@@ -219,7 +219,7 @@ export function transform(tree: Tree, code: string) {
 
       if (!Array.isArray(newValue) || skipChildren) return false;
 
-      if (["StringLiteral", "Identifier"].includes(node.name)) pathBack();
+      if (["String", "Identifier"].includes(node.name)) pathBack();
 
       addInPath(newValue);
     },

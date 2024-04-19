@@ -12,7 +12,7 @@ statement[@isGroup=Statement] {
 }
 
 expression[@isGroup=Expression] {
-  StringLiteral |
+  String |
   Number |
   Float |
   @specialize[@name=BooleanLiteral]<Identifier, "Verdadeiro" | "Falso">
@@ -26,7 +26,7 @@ Type {
 }
 
 AlgoritmoDeclaration { 
-  kw<"Algoritmo"> (Identifier | StringLiteral) VariableDeclaration? BlockAlgoritmo
+  kw<"Algoritmo"> (Identifier | String) VariableDeclaration? BlockAlgoritmo
 }
 
 VariableDeclaration {
@@ -55,7 +55,7 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
   Identifier { identifierChar (identifierChar | @digit)* }
   identifierChar { @asciiLetter | $[_$\u{a1}-\u{10ffff}] }
   PropertyName { Identifier }
-  StringLiteral {
+  String {
     '"' (![\\\n"] | "\\" _)* '"'
   }
   LineComment { "//" ![\n]* }

@@ -141,7 +141,7 @@ const Linter = linter((view) => {
 
         if (node.name === "AlgoritmoDeclaration") {
           const Identifier = node.node.getChild("Identifier");
-          const StringLiteral = node.node.getChild("StringLiteral");
+          const StringLiteral = node.node.getChild("String");
           // console.log(node.node.lastChild);
           if (!Identifier && !StringLiteral) {
             logError(
@@ -153,7 +153,7 @@ const Linter = linter((view) => {
         }
 
         if (node.name === "EscrevaStatement") {
-          const StringLiteral = node.node.getChild("StringLiteral");
+          const StringLiteral = node.node.getChild("String");
           const Identifier = node.node.getChild("Identifier");
           if (!StringLiteral && !Identifier) {
             logError(
@@ -181,7 +181,7 @@ const parserWithMetadata = parser.configure({
       Algoritmo: t.keyword, // Palavras-chave
       "Inicio Fim Var": t.brace,
       "Identifier BooleanLiteral": t.variableName, // Nomes de algoritmos e variáveis
-      StringLiteral: t.string, // Strings
+      String: t.string, // Strings
       "Type!": t.typeName,
     }),
   ],
