@@ -3,6 +3,7 @@ import {
   Completion,
   CompletionContext,
   CompletionResult,
+  snippetCompletion,
 } from "@codemirror/autocomplete";
 import { LRLanguage, LanguageSupport, syntaxTree } from "@codemirror/language";
 import { Diagnostic, linter } from "@codemirror/lint";
@@ -39,11 +40,20 @@ function AutoComplete(context: CompletionContext): CompletionResult | null {
     nodeBefore.name === "AlgorithmFile" ||
     (word.text && "Algoritmo".includes(word.text))
   ) {
-    options.push({
-      label: "Algoritmo",
-      type: "keyword",
-      info: getInfo("Algoritmo"),
-    });
+    options.push(
+      {
+        label: "Algoritmo",
+        type: "keyword",
+        info: getInfo("Algoritmo"),
+      },
+      snippetCompletion("Algoritmo ${name}\nVar\n\nInicio\n\nFim", {
+        label: "Algoritmo",
+        type: "text",
+        detail: "Macro",
+        info: getInfo("AlgoritmoMacro"),
+        boost: 1,
+      })
+    );
   }
 
   if (actualNode.name === "BlockAlgoritmo") {

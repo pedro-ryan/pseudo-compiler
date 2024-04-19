@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 
+import AlgoritmoMacro from "./algoritmo-macro.md?raw";
 import Algoritmo from "./algoritmo.md?raw";
 import BlocoAlgoritmo from "./bloco-algoritmo.md?raw";
 import Escreva from "./escreva.md?raw";
@@ -15,6 +16,7 @@ const descriptions = {
   Var,
   Inicio: `Palavra-chave utilizada para abrir um bloco de um algoritmo`,
   Fim: `Palavra-chave utilizada para fechar um bloco de um algoritmo`,
+  AlgoritmoMacro,
 };
 
 function getInfo(option: keyof typeof descriptions) {
