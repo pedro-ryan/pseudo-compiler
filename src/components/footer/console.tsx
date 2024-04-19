@@ -34,7 +34,7 @@ export function Console() {
             key={`${index}_${new Date().getTime()}`}
             className={cn(log.type === "error" && "text-destructive")}
           >
-            {log.value.replace(/( )$/, "\u00A0")}
+            {log.value.replace(/( )$/, "\u00A0") || "\u00A0"}
             {waiting && length - 1 === index ? <PromptInput /> : ""}
           </p>
         );
