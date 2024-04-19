@@ -15,7 +15,7 @@ const editorTheme = createTheme({
   },
   styles: [
     {
-      tag: t.keyword,
+      tag: [t.keyword, t.definitionOperator],
       color: "#f97583",
     },
     {

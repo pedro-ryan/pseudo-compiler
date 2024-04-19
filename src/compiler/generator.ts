@@ -8,9 +8,13 @@ export function generator(AST: ModifiedAst) {
       const current = obj.shift();
       if (!current) return;
 
-      if ("name" in current) {
+      if ("name" in current && "body" in current) {
         code += gen(current.body);
         continue;
+      }
+
+      if ("name" in current) {
+        code += `this.setVar("${current.name}", ${current.value})\n`;
       }
 
       if ("call" in current) {

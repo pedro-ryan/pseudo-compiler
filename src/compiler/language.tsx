@@ -183,6 +183,7 @@ const parserWithMetadata = parser.configure({
       "Identifier BooleanLiteral": t.variableName, // Nomes de algoritmos e variáveis
       String: t.string, // Strings
       "Type!": t.typeName,
+      Equals: t.definitionOperator,
     }),
   ],
 });

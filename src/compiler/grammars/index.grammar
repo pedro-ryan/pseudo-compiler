@@ -3,6 +3,8 @@
 @skip { space | LineComment }
 
 @precedence {
+  assign @right,
+
   statement @cut
 }
 
@@ -15,7 +17,8 @@ expression[@isGroup=Expression] {
   String |
   Number |
   Float |
-  @specialize[@name=BooleanLiteral]<Identifier, "Verdadeiro" | "Falso">
+  @specialize[@name=BooleanLiteral]<Identifier, "Verdadeiro" | "Falso"> |
+  AssignmentExpression
 }
 
 Type {
@@ -37,8 +40,12 @@ VariableDefinition {
   Identifier ":" Type
 }
 
+AssignmentExpression {
+  Identifier !assign "<-" expression
+}
+
 BlockAlgoritmo {
-  kw<"Inicio"> statement* kw<"Fim">
+  kw<"Inicio"> (statement | expression)* kw<"Fim">
 }
 
 EscrevaStatement {
@@ -62,6 +69,8 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
   space { $[ \t\n\r]+ }
   Number { @digit+ }
   Float { @digit+ "." @digit+ }
+
+  "<-"[@name=Equals]
 
   @precedence { Float, Number }
 }

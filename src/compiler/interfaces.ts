@@ -62,7 +62,8 @@ export type ModifiedExpression =
   | TCallExpression
   | TFunctionDeclaration
   | Code
-  | VariableDeclaration;
+  | VariableDeclaration
+  | AssignmentExpression;
 
 export type Code = {
   name: "Code";
@@ -84,6 +85,11 @@ export type TFunctionDeclaration = {
   keyword: "function";
   args: Identifier;
   body: ModifiedAst;
+};
+
+export type AssignmentExpression = {
+  name: string;
+  value: string | number | boolean;
 };
 
 export type VariableDeclaration = {

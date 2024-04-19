@@ -104,6 +104,36 @@ function generateValue(
     };
   }
 
+  if (node.name === "AssignmentExpression") {
+    childrenSkip();
+    let variable = "";
+    let value: string | number | boolean = "";
+
+    node.node.cursor().iterate((child) => {
+      const text = getText(child);
+      if (child.name === "Identifier") {
+        variable = text;
+      }
+      if (child.name === "Number") {
+        value = parseInt(text);
+      }
+      if (child.name === "Float") {
+        value = parseFloat(text);
+      }
+      if (child.name === "Boolean") {
+        value = text === "Verdadeiro" ? true : false;
+      }
+      if (child.name === "String") {
+        value = text;
+      }
+    });
+
+    return {
+      name: variable,
+      value,
+    };
+  }
+
   if (["Number", "Float"].includes(node.name)) {
     if (parentName !== "VariableDefinition") setIn("args");
     const stringNumber = getText();
