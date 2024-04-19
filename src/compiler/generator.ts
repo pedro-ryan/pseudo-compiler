@@ -36,11 +36,12 @@ export function generator(AST: ModifiedAst) {
       }
 
       if ("keyword" in current && current.keyword === "function") {
-        code += `async function ${current.args.name}() {\n`;
+        const name = current.args.name.replaceAll(" ", "_");
+        code += `async function _${name}() {\n`;
         code += gen(current.body);
         code += "}\n";
 
-        code += `${current.args.name}.call(this);\n`;
+        code += `_${name}.call(this);\n`;
         continue;
       }
 

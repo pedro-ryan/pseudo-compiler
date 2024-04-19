@@ -133,7 +133,7 @@ function generateValue(
       value: getText().replaceAll(/(^["])|(["])$/g, ""),
     };
 
-    if (node.name == "Identifier") {
+    if (node.name == "Identifier" || parentName === "AlgoritmoDeclaration") {
       value = {
         name: value.value,
       };

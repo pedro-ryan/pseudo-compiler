@@ -141,11 +141,12 @@ const Linter = linter((view) => {
 
         if (node.name === "AlgoritmoDeclaration") {
           const Identifier = node.node.getChild("Identifier");
+          const StringLiteral = node.node.getChild("StringLiteral");
           // console.log(node.node.lastChild);
-          if (!Identifier) {
+          if (!Identifier && !StringLiteral) {
             logError(
               node,
-              "A palavra-chave Algoritmo deve ter um identificado após ser chamado, por exemplo: Algoritmo exemplo",
+              'A palavra-chave Algoritmo deve ter um identificado após ser chamado ou um texto entre aspas, por exemplo: Algoritmo exemplo ou Algoritmo "Exemplo"',
               { to: 9 }
             );
           }
