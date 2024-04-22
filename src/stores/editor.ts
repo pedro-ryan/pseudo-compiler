@@ -1,7 +1,7 @@
 import { runner } from "@/compiler";
 import { generator } from "@/compiler/generator";
 import { parser } from "@/compiler/parser";
-import { transform } from "@/compiler/transform/index";
+import { transform } from "@/compiler/transform";
 import { ConsoleStore } from "@/stores/console";
 import { ViewUpdate } from "@uiw/react-codemirror";
 import { create } from "zustand";

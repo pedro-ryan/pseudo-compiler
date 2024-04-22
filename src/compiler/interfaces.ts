@@ -1,98 +1,72 @@
-export type TokensTypes =
-  | "NewLine"
-  | "Integer"
-  | "Float"
-  | "Indentation"
-  | "Word"
-  | "Quote";
+import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
 
-export type Token = {
-  type: TokensTypes;
-  value?: string | number;
+export type TransformerHelpers = {
+  node: SyntaxNodeRef;
+  getText: (node?: SyntaxNodeRef) => string;
+  childrenIn: (In: string) => void;
+  getChild: SyntaxNode["getChild"];
+  skipChildren: () => void;
 };
 
-export type Ast = AstValue[];
+export type Transformer = (
+  helpers: TransformerHelpers
+) => TransformData | boolean | void;
 
-export type AstType =
-  | "CallExpression"
-  | "FunctionDeclaration"
-  | "VariableDeclaration"
-  | "CommentExpression"
-  | "String"
-  | "Boolean"
-  | "Number"
-  | "Float"; // Number Alias
-
-export type GenericAst<
-  T extends AstType | TokensTypes,
-  V extends string | number | boolean = string
-> = {
-  type: T;
-  value: V;
-};
-
-export type FunctionDeclaration = {
-  type: "FunctionDeclaration";
-  name: string;
-  identifier: GenericAst<"String" | "Word">;
-  body: Ast;
-};
-
-export type CallExpressionArgs = Array<
-  GenericAst<"String"> | GenericAst<"Number" | "Float", number> | Identifier
->;
-
-export type CallExpression = {
-  type: "CallExpression";
-  name: string;
-  args?: CallExpressionArgs;
-};
-
-export type AstValue =
-  | GenericAst<"String">
-  | GenericAst<"CommentExpression">
-  | GenericAst<"Number" | "Float", number>
-  | GenericAst<"Boolean", boolean>
-  | FunctionDeclaration
-  | CallExpression;
-
-export type ModifiedAst = ModifiedExpression[];
-
-export type ModifiedExpression =
-  | TCallExpression
-  | TFunctionDeclaration
+export type TransformData =
   | Code
+  | AlgoritmoDeclaration
   | VariableDeclaration
-  | AssignmentExpression;
+  | Call
+  | Assignment;
 
 export type Code = {
-  name: "Code";
-  body: ModifiedAst;
+  type: "code";
+  body: [];
 };
 
-export type TCallExpression = {
-  call: "Logger" | "Prompt";
-  args: CallExpressionArgs;
-  async?: boolean;
-  assign?: boolean;
-};
-
-export type Identifier = {
+export type AlgoritmoDeclaration = {
+  type: "function";
   name: string;
-};
-
-export type TFunctionDeclaration = {
-  keyword: "function";
-  args: Identifier;
-  body: ModifiedAst;
-};
-
-export type AssignmentExpression = {
-  name: string;
-  value: string | number | boolean;
+  body: [];
 };
 
 export type VariableDeclaration = {
-  keyword: "var";
-  body: { type: string; name: string }[];
+  type: "variables";
+  body: VariableDefinition[];
+};
+
+export type VariableDefinition = {
+  name: string;
+  type: "string" | "number" | "float" | "boolean";
+};
+
+export type Call = {
+  type: "call";
+  call: string;
+  async?: boolean;
+  assign?: boolean;
+  args: Expression[];
+};
+
+export type Assignment = {
+  type: "assign";
+  var: string;
+  expression: Expression;
+};
+
+export type Expression = ExpressionValue | Operation | Variable;
+
+export type ExpressionValue = {
+  type: "value";
+  value: string | number | boolean;
+};
+
+export type Operation = {
+  type: "operation";
+  value: string;
+};
+
+export type Variable = {
+  type: "var";
+  name: string;
 };

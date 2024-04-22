@@ -1,262 +1,76 @@
-import {
-  AstValue,
-  Identifier,
-  ModifiedAst,
-  ModifiedExpression,
-} from "@/compiler/interfaces";
 import { get, set } from "@/compiler/utils";
-import { SyntaxNodeRef, Tree } from "@lezer/common";
+import { Tree } from "@lezer/common";
+import "../definitions/loadDefinitions";
+import { TransformData, TransformerHelpers } from "../interfaces";
+import { getTransformer } from "./context";
 
-type ValueType =
-  | ModifiedExpression
-  | Identifier
-  | AstValue
-  | { name: string; type: string };
-
-type GenerateValueActions = {
-  removeEntered: () => void;
-  setIn: (newSetIn: string | string[]) => void;
-  setPath: (newPath: (number | string)[]) => void;
-  childrenSkip: () => void;
-  pathBack: () => void;
-};
-
-function generateValue(
-  node: SyntaxNodeRef,
-  code: string,
-  { setIn, removeEntered, setPath, childrenSkip }: GenerateValueActions
-): ValueType | boolean {
-  const getText = (toGetNode?: SyntaxNodeRef) => {
-    const scopedNode = toGetNode ?? node;
-    return code.slice(scopedNode.from, scopedNode.to);
-  };
-
-  const parentName = node.node.parent?.name ?? "";
-
-  if (["Algoritmo", "Inicio", "Fim", "Escreva", "Leia"].includes(node.name)) {
-    // Skip
-    return false;
-  }
-
-  if (["BlockAlgoritmo", "Type"].includes(node.name)) {
-    // Skip but children add in parent
-    removeEntered();
-    return true;
-  }
-
-  if (node.name === "AlgorithmFile") {
-    return {
-      name: "Code",
-      body: [],
-    };
-  }
-
-  if (node.name === "AlgoritmoDeclaration") {
-    setPath([0, "body"]);
-    return {
-      keyword: "function",
-      args: {
-        name: "",
-      },
-      body: [],
-    };
-  }
-
-  if (node.name === "VariableDeclaration") {
-    childrenSkip();
-    const Variables: { type: string; name: string }[] = [];
-
-    let variable = {
-      name: "",
-      type: "String",
-    };
-
-    node.node.cursor().iterate(
-      (child) => {
-        if (child.name === "Identifier") {
-          console.log(child.from, child.to);
-          variable.name = getText(child);
-          return false;
-        }
-
-        if (child.name === "Logico") {
-          variable.type = "Boolean";
-        }
-
-        if (["Inteiro", "Real"].includes(child.name)) {
-          variable.type = "Number";
-        }
-      },
-      (child) => {
-        if (child.name === "VariableDefinition") {
-          Variables.push(variable);
-          variable = {
-            name: "",
-            type: "String",
-          };
-        }
-      }
-    );
-
-    return {
-      keyword: "var",
-      body: Variables,
-    };
-  }
-
-  if (node.name === "AssignmentExpression") {
-    childrenSkip();
-    let variable = "";
-    let value: string | number | boolean = "";
-
-    node.node.cursor().iterate((child) => {
-      const text = getText(child);
-      if (child.name === "Identifier") {
-        variable = text;
-      }
-      if (child.name === "Number") {
-        value = parseInt(text);
-      }
-      if (child.name === "Float") {
-        value = parseFloat(text);
-      }
-      if (child.name === "Boolean") {
-        value = text === "Verdadeiro" ? true : false;
-      }
-      if (child.name === "String") {
-        value = text;
-      }
-    });
-
-    return {
-      name: variable,
-      value,
-    };
-  }
-
-  if (["Number", "Float"].includes(node.name)) {
-    if (parentName !== "VariableDefinition") setIn("args");
-    const stringNumber = getText();
-    const type = stringNumber.indexOf(".") > -1 ? "Float" : "Number";
-
-    const value =
-      type === "Float" ? parseFloat(stringNumber) : parseInt(stringNumber);
-
-    return {
-      type,
-      value,
-    };
-  }
-
-  if (node.name === "BooleanLiteral") {
-    if (parentName !== "VariableDefinition") setIn("args");
-    return {
-      type: "Boolean",
-      value: getText() === "Verdadeiro" ? true : false,
-    };
-  }
-
-  if (["String", "Identifier"].includes(node.name)) {
-    if (parentName !== "VariableDefinition") setIn("args");
-    let value: ValueType = {
-      type: "String",
-      value: getText().replaceAll(/(^["])|(["])$/g, ""),
-    };
-
-    if (node.name == "Identifier" || parentName === "AlgoritmoDeclaration") {
-      value = {
-        name: value.value,
-      };
-    }
-    return value;
-  }
-
-  if (node.name.includes("Leia")) {
-    return {
-      call: "Prompt",
-      async: true,
-      assign: true,
-      args: [],
-    };
-  }
-
-  if (node.name.includes("Escreva")) {
-    return {
-      call: "Logger",
-      args: [],
-    };
-  }
-
-  return false;
-}
 export function transform(tree: Tree, code: string) {
   const cursor = tree.cursor();
 
   const entered: string[] = [];
   let path: (string | number)[] = [];
-  const block: ModifiedAst = [];
-
-  const addInPath = (value: unknown[]) => {
-    path = path.concat(value.length - 1, "body");
-  };
-
-  const pathBack = () => {
-    path = path.slice(0, -2);
-  };
+  let block: TransformData[] = [];
 
   cursor.iterate(
     (node) => {
-      entered.unshift(node.name);
-      let value = {} as ValueType;
-      let setIn: string | string[] = "body";
+      const transformer = getTransformer(node.name);
+
+      console.log(node.name, transformer);
+      if (!transformer) return false;
+
+      let childrenIn: string = "";
       let skipChildren = false;
 
-      const ValueGenerated = generateValue(node, code, {
-        setIn: (newSetIn) => (setIn = newSetIn),
-        removeEntered: () => {
-          entered.shift();
+      const helpers: TransformerHelpers = {
+        node,
+        getText(toGetNode) {
+          const scopedNode = toGetNode ?? node;
+          return code.slice(scopedNode.from, scopedNode.to);
         },
-        setPath: (newPath) => (path = newPath),
-        childrenSkip() {
+        childrenIn(In) {
+          entered.unshift(node.name);
+          childrenIn = In;
+        },
+        getChild(...props) {
+          return node.node.getChild(...props);
+        },
+        skipChildren() {
           skipChildren = true;
         },
-        pathBack,
-      });
-      if (typeof ValueGenerated === "boolean") return ValueGenerated;
+      };
 
-      value = ValueGenerated;
+      const data = transformer(helpers);
 
-      if (!path.length) {
-        block.push(value as ModifiedExpression);
-        addInPath(block);
-        return true;
+      if (!data || typeof data === "boolean") return data;
+
+      const oldValue = get(block, path) ?? [];
+      if (!Array.isArray(oldValue)) {
+        throw new Error("old value is not array ? hmmm check the transform");
       }
 
-      const setPath = path.slice(0, -1).concat(setIn);
-
-      const oldValue = get(block, setPath);
-      const newValue = Array.isArray(oldValue)
-        ? oldValue.concat(value)
-        : { ...oldValue, ...value };
+      const newValue = oldValue.concat(data);
 
       console.log(
         JSON.stringify(block, null, 2),
         node.name,
         JSON.stringify(newValue, null, 2),
-        JSON.stringify(setPath)
+        JSON.stringify(path)
       );
-      set(block, setPath, newValue);
+      if (path.length) {
+        set(block, path, newValue);
+      } else {
+        block = newValue;
+      }
 
-      if (!Array.isArray(newValue) || skipChildren) return false;
-
-      if (["String", "Identifier"].includes(node.name)) pathBack();
-
-      addInPath(newValue);
+      if (childrenIn) {
+        path = path.concat(newValue.length - 1, childrenIn);
+      }
+      if (skipChildren) return false;
     },
     (node) => {
       if (entered[0] == node.name) {
         entered.shift();
-        pathBack();
+        path = path.slice(0, -2);
       }
     }
   );
