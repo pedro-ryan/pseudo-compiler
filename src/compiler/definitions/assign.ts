@@ -6,7 +6,7 @@ import { setTransformer } from "@/compiler/transform/context";
 setTransformer("AssignmentExpression", ({ skipChildren, node, getText }) => {
   skipChildren();
 
-  const variableNode = node.node.getChild("Identifier");
+  const variableNode = node.node.getChild("VariableName");
   if (!variableNode) return false;
 
   const expression = getExpressions(node, getText).slice(-1)[0];

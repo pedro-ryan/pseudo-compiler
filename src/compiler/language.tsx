@@ -153,9 +153,10 @@ const Linter = linter((view) => {
         }
 
         if (node.name === "EscrevaStatement") {
-          const StringLiteral = node.node.getChild("String");
-          const Identifier = node.node.getChild("Identifier");
-          if (!StringLiteral && !Identifier) {
+          const result = ["String", "VariableName"].some(
+            (v) => !!node.node.getChild(v)
+          );
+          if (!result) {
             logError(
               node,
               'Para a utilização do Escreva é necessário ter um texto entre aspas ou uma variável após ele, desta forma: Escreva "Hello World!" ou Escreva nome_de_uma_variável'

@@ -10,7 +10,8 @@
 
 statement[@isGroup=Statement] {
   EscrevaStatement |
-  LeiaStatement
+  LeiaStatement |
+  AssignmentExpression
 }
 
 expression[@isGroup=Expression] {
@@ -18,7 +19,7 @@ expression[@isGroup=Expression] {
   Number |
   Float |
   @specialize[@name=BooleanLiteral]<Identifier, "Verdadeiro" | "Falso"> |
-  AssignmentExpression
+  VariableName
 }
 
 Type {
@@ -37,23 +38,25 @@ VariableDeclaration {
 }
 
 VariableDefinition {
-  Identifier ":" Type
+  VariableName ":" Type
 }
 
 AssignmentExpression {
-  Identifier !assign "<-" expression
+  VariableName !assign "<-" expression
 }
+
+VariableName { Identifier }
 
 BlockAlgoritmo {
   kw<"Inicio"> (statement | expression)* kw<"Fim">
 }
 
 EscrevaStatement {
-  kw<"Escreva"> (expression | Identifier)
+  kw<"Escreva"> expression
 }
 
 LeiaStatement {
-  kw<"Leia"> Identifier
+  kw<"Leia"> VariableName
 }
 
 kw<term> { @specialize[@name={term}]<Identifier, term> }
@@ -61,7 +64,6 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
 @tokens {
   Identifier { identifierChar (identifierChar | @digit)* }
   identifierChar { @asciiLetter | $[_$\u{a1}-\u{10ffff}] }
-  PropertyName { Identifier }
   String {
     '"' (![\\\n"] | "\\" _)* '"'
   }
