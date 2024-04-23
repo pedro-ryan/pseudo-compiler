@@ -97,10 +97,8 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
   
   "(" ")"
 
-  CompareOp { ("<" | ">" | "=" | "<>") "<-"? }
-
   ArithOp<expr> { expr }
-  LogicOp<expr> { expr }
+  CompareOp { "<" | ">" | ">=" | "<=" | "=" | "<>" }
 
   "<-"[@name=Equals]
 

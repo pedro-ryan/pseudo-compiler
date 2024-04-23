@@ -32,6 +32,9 @@ const BinaryExpression = (
       }
     }
 
+    if (text === "<>") text = "!=";
+    if (text === "=") text = "==";
+
     operation += text;
   });
 
