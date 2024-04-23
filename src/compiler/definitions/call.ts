@@ -13,6 +13,16 @@ setTransformer("EscrevaStatement", ({ skipChildren, node, getText }) => {
   };
 });
 
+setTransformer("EscrevalStatement", ({ skipChildren, node, getText }) => {
+  skipChildren();
+
+  return {
+    type: "call",
+    call: "LoggerNewLine",
+    args: getExpressions(node, getText),
+  };
+});
+
 setTransformer("LeiaStatement", ({ skipChildren, node, getText }) => {
   skipChildren();
 

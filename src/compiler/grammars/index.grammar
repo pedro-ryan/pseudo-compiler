@@ -18,7 +18,8 @@
 statement[@isGroup=Statement] {
   EscrevaStatement |
   LeiaStatement |
-  AssignmentExpression
+  AssignmentExpression |
+  EscrevalStatement
 }
 
 expression[@isGroup=Expression] {
@@ -86,6 +87,10 @@ BlockAlgoritmo {
 
 EscrevaStatement {
   kw<"Escreva"> expression
+}
+
+EscrevalStatement {
+  kw<"Escreval"> expression
 }
 
 LeiaStatement {

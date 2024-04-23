@@ -3,6 +3,7 @@ import { create } from "zustand";
 interface IConsoleStore {
   logs: Array<{ type: "info" | "error"; value: string; modified?: boolean }>;
   log: (log: string, modified?: boolean) => void;
+  appendLog: (log: string, modified?: boolean) => void;
   error: (err: string) => void;
   clear: () => void;
 
@@ -55,22 +56,8 @@ const ConsoleStore = create<IConsoleStore>((set, get) => ({
 
       const persistPrompt = (response: string) => {
         if (!response) return;
-        const { log, logs } = get();
-
-        const lastLog = logs.slice(-1)[0];
-
-        if (!lastLog || lastLog.modified) {
-          return log(response, true);
-        }
-
-        lastLog.modified = true;
-        lastLog.value += response;
-
-        set((state) => ({
-          logs: [...state.logs.slice(0, -1), lastLog],
-        }));
-
-        console.log(get().logs);
+        const { appendLog } = get();
+        appendLog(response, true);
       };
 
       return new Promise((resolve) => {
@@ -110,6 +97,22 @@ const ConsoleStore = create<IConsoleStore>((set, get) => ({
           modified,
         },
       ],
+    }));
+  },
+  appendLog(response, modified) {
+    const { log, logs } = get();
+
+    const lastLog = logs.slice(-1)[0];
+
+    if (!lastLog || lastLog.modified) {
+      return log(response, modified);
+    }
+
+    if (modified) lastLog.modified = true;
+    lastLog.value += response;
+
+    set((state) => ({
+      logs: [...state.logs.slice(0, -1), lastLog],
     }));
   },
   error(err) {

@@ -1,19 +1,26 @@
 import { ConsoleStore } from "@/stores/console";
-export const Logger = (log: unknown) => {
-  const { log: Log } = ConsoleStore.getState();
+
+const prepareLog = (log: unknown) => {
   if (typeof log === "object") {
-    const ObjectString = JSON.stringify(log, null, 2);
-    Log(ObjectString);
-    return console.log(ObjectString);
+    return JSON.stringify(log, null, 2);
   }
 
   if (typeof log === "boolean") {
-    Log(log ? "Verdadeiro" : "Falso");
-    return console.log(log);
+    return log ? "Verdadeiro" : "Falso";
   }
 
-  Log(String(log));
-  console.log(log);
+  return String(log);
+};
+export const Logger = (log: unknown, newLine = false) => {
+  const { appendLog, log: Log } = ConsoleStore.getState();
+  const logString = prepareLog(log);
+  if (newLine) Log(logString);
+  else appendLog(logString);
+  console.log(logString);
+};
+
+const LoggerNewLine = (log: unknown) => {
+  Logger(log, true);
 };
 
 const errors = {
@@ -40,6 +47,7 @@ export function runner(code: string) {
 
   const RunnerThis = {
     Logger,
+    LoggerNewLine,
     Prompt,
     variables: {} as Variables,
     checkVar(prop: string) {
