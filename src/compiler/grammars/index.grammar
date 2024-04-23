@@ -19,7 +19,8 @@ statement[@isGroup=Statement] {
   EscrevaStatement |
   LeiaStatement |
   AssignmentExpression |
-  EscrevalStatement
+  EscrevalStatement |
+  LimpatelaStatement
 }
 
 expression[@isGroup=Expression] {
@@ -91,6 +92,10 @@ EscrevaStatement {
 
 EscrevalStatement {
   kw<"Escreval"> expression
+}
+
+LimpatelaStatement {
+  kw<"Limpatela"> expression
 }
 
 LeiaStatement {

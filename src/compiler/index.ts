@@ -23,6 +23,10 @@ const LoggerNewLine = (log: unknown) => {
   Logger(log, true);
 };
 
+const Clear = () => {
+  ConsoleStore.getState().clear();
+};
+
 const errors = {
   NotDefined: (prop?: string) =>
     `A variável "${prop}", não foi encontrada, verifique se você a declarou no bloco de variáveis`,
@@ -48,6 +52,7 @@ export function runner(code: string) {
   const RunnerThis = {
     Logger,
     LoggerNewLine,
+    Clear,
     Prompt,
     variables: {} as Variables,
     checkVar(prop: string) {

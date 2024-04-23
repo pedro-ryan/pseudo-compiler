@@ -23,6 +23,16 @@ setTransformer("EscrevalStatement", ({ skipChildren, node, getText }) => {
   };
 });
 
+setTransformer("LimpatelaStatement", ({ skipChildren }) => {
+  skipChildren();
+
+  return {
+    type: "call",
+    call: "Clear",
+    args: [],
+  };
+});
+
 setTransformer("LeiaStatement", ({ skipChildren, node, getText }) => {
   skipChildren();
 

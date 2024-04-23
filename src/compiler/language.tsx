@@ -68,6 +68,10 @@ function AutoComplete(context: CompletionContext): CompletionResult | null {
         type: "function",
         info: getInfo("Leia"),
       },
+      {
+        label: "Limpatela",
+        type: "function",
+      },
     ];
   }
 
