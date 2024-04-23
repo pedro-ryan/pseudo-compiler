@@ -15,7 +15,13 @@ const editorTheme = createTheme({
   },
   styles: [
     {
-      tag: [t.keyword, t.definitionOperator, t.arithmeticOperator],
+      tag: [
+        t.keyword,
+        t.definitionOperator,
+        t.arithmeticOperator,
+        t.logicOperator,
+        t.compareOperator,
+      ],
       color: "#f97583",
     },
     {
@@ -37,6 +43,10 @@ const editorTheme = createTheme({
     {
       tag: t.variableName,
       color: "#6b9fda",
+    },
+    {
+      tag: t.paren,
+      color: "#ffd700",
     },
   ],
 });

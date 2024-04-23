@@ -193,6 +193,9 @@ const parserWithMetadata = parser.configure({
       "Type!": t.typeName,
       Equals: t.definitionOperator,
       ArithOp: t.arithmeticOperator,
+      "NÃO E OU": t.logicOperator,
+      CompareOp: t.compareOperator,
+      "( )": t.paren,
     }),
   ],
 });
