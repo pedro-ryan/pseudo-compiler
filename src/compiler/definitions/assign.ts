@@ -1,7 +1,7 @@
-import { getExpressions } from "@/compiler/definitions/call";
 import { setGenerator } from "@/compiler/generator/context";
 import { Assignment } from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
+import { getExpressions } from "./expressions";
 
 setTransformer("AssignmentExpression", ({ skipChildren, node, getText }) => {
   skipChildren();
