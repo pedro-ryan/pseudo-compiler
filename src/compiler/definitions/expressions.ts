@@ -7,7 +7,12 @@ const BinaryExpression = (
 ) => {
   let operation = "";
 
-  const ignoreNodes = ["BinaryExpression", "ParenthesizedExpression"];
+  const ignoreNodes = [
+    "BinaryExpression",
+    "ParenthesizedExpression",
+    "UnaryExpression",
+    "LogicOp",
+  ];
 
   node.node.firstChild?.cursor().iterate((binaryChild) => {
     if (ignoreNodes.includes(binaryChild.name)) return true;
@@ -34,6 +39,9 @@ const BinaryExpression = (
 
     if (text === "<>") text = "!=";
     if (text === "=") text = "==";
+    if (text === "NÃO") text = "!";
+    if (text === "E") text = "&&";
+    if (text === "OU") text = "||";
 
     operation += text;
   });
