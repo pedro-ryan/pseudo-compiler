@@ -3,6 +3,10 @@
 @skip { space | LineComment }
 
 @precedence {
+  exp @left,
+  times @left,
+  plus @left,
+  rel @left,
   assign @right,
 
   statement @cut
@@ -19,7 +23,9 @@ expression[@isGroup=Expression] {
   Number |
   Float |
   @specialize[@name=BooleanLiteral]<Identifier, "Verdadeiro" | "Falso"> |
-  VariableName
+  VariableName |
+  ParenthesizedExpression |
+  BinaryExpression
 }
 
 Type {
@@ -47,6 +53,15 @@ AssignmentExpression {
 
 VariableName { Identifier }
 
+BinaryExpression {
+  expression !exp ArithOp<"^"> expression |
+  expression !times (ArithOp<"/"> | ArithOp<"%"> | ArithOp<"*">) expression |
+  expression !plus ArithOp<"+" | "-"> expression |
+  expression !rel CompareOp expression
+}
+
+ParenthesizedExpression { "(" expression ")" }
+
 BlockAlgoritmo {
   kw<"Inicio"> (statement | expression)* kw<"Fim">
 }
@@ -71,8 +86,16 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
   space { $[ \t\n\r]+ }
   Number { @digit+ }
   Float { @digit+ "." @digit+ }
+  
+  "(" ")"
+
+  CompareOp { ("<" | ">" | "=" | "<>") "<-"? }
+
+  ArithOp<expr> { expr }
+  LogicOp<expr> { expr }
 
   "<-"[@name=Equals]
 
+  @precedence { LineComment, ArithOp<"/"> }
   @precedence { Float, Number }
 }

@@ -153,7 +153,7 @@ const Linter = linter((view) => {
         }
 
         if (node.name === "EscrevaStatement") {
-          const result = ["String", "VariableName"].some(
+          const result = ["String", "VariableName", "BinaryExpression"].some(
             (v) => !!node.node.getChild(v)
           );
           if (!result) {
@@ -185,6 +185,7 @@ const parserWithMetadata = parser.configure({
       String: t.string, // Strings
       "Type!": t.typeName,
       Equals: t.definitionOperator,
+      ArithOp: t.arithmeticOperator,
     }),
   ],
 });

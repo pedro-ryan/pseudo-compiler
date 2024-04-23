@@ -10,6 +10,39 @@ export function getExpressions(
   const expressions: Expression[] = [];
 
   node.node.firstChild?.cursor().iterate((child) => {
+    if (child.name === "BinaryExpression") {
+      let operation = ""; // getText(child).replaceAll(/\^/g, "**"); // replace exponentiation
+
+      child.node.firstChild?.cursor().iterate((binaryChild) => {
+        if (
+          ["BinaryExpression", "ParenthesizedExpression"].includes(
+            binaryChild.name
+          )
+        ) {
+          return true;
+        }
+        const text = getText(binaryChild);
+        if (binaryChild.name === "ArithOp") {
+          operation += text.replaceAll(/\^/g, "**");
+          return false;
+        }
+
+        if (binaryChild.name === "VariableName") {
+          operation += `$\{${text}}`;
+          return false;
+        }
+
+        operation += text;
+      });
+
+      expressions.push({
+        type: "operation",
+        value: operation,
+      });
+
+      return false;
+    }
+
     if (child.name === "String") {
       expressions.push({
         type: "value",
@@ -73,7 +106,12 @@ setGenerator<Call>("call", ({ data }) => {
   let code = "";
 
   let args = data.args.map((v) => {
+    if (v.type === "operation") {
+      return v.value.replaceAll(/(\$\{)(.*)\}/g, 'this.getVar("$2")');
+    }
+
     if (v.type === "var") {
+      if (data.assign) return v.name;
       return `this.getVar("${v.name}")`;
     }
 

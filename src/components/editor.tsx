@@ -15,7 +15,7 @@ const editorTheme = createTheme({
   },
   styles: [
     {
-      tag: [t.keyword, t.definitionOperator],
+      tag: [t.keyword, t.definitionOperator, t.arithmeticOperator],
       color: "#f97583",
     },
     {
