@@ -64,6 +64,10 @@ function AutoComplete(context: CompletionContext): CompletionResult | null {
         info: getInfo("Escreva"),
       },
       {
+        label: "Escreval",
+        type: "function",
+      },
+      {
         label: "Leia",
         type: "function",
         info: getInfo("Leia"),
