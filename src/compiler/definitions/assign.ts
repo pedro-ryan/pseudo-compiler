@@ -1,7 +1,7 @@
 import { setGenerator } from "@/compiler/generator/context";
 import { Assignment } from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
-import { getExpressions } from "./expressions";
+import { expressionVariable, getExpressions } from "./expressions";
 
 setTransformer("AssignmentExpression", ({ skipChildren, node, getText }) => {
   skipChildren();
@@ -24,7 +24,7 @@ setGenerator<Assignment>("assign", ({ data }) => {
   if (data.expression.type === "var") {
     value = `this.getVar("${data.expression.name}")`;
   } else {
-    value = `${data.expression.value}`;
+    value = expressionVariable(`${data.expression.value}`);
   }
 
   return `this.setVar("${data.var}", ${value})\n`;

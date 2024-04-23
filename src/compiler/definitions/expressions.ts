@@ -82,3 +82,7 @@ export function getExpressions(
 
   return expressions;
 }
+
+export function expressionVariable(text: string) {
+  return text.replaceAll(/(\$\{)(.*)\}/g, 'this.getVar("$2")');
+}
