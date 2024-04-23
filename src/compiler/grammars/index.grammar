@@ -44,7 +44,7 @@ VariableDeclaration {
 }
 
 VariableDefinition {
-  VariableName ":" Type
+  commaSep1<VariableName> ":" Type
 }
 
 AssignmentExpression {
@@ -52,6 +52,14 @@ AssignmentExpression {
 }
 
 VariableName { Identifier }
+
+commaSep<content> {
+  (content ("," content)*)?
+}
+
+commaSep1<content> {
+  content ("," content)*
+}
 
 BinaryExpression {
   expression !exp ArithOp<"^"> expression |

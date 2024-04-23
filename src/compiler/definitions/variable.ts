@@ -8,10 +8,10 @@ setTransformer("VariableDeclaration", ({ node, skipChildren, getText }) => {
   const body: VariableDefinition[] = [];
 
   node.node.getChildren("VariableDefinition").forEach((child) => {
-    const identifier = child.firstChild;
+    const identifiers = child.node.getChildren("VariableName");
     const type = child.lastChild?.firstChild;
 
-    if (!identifier || !type) return;
+    if (!identifiers.length || !type) return;
 
     let varType: "string" | "number" | "float" | "boolean" = "string";
 
@@ -27,9 +27,11 @@ setTransformer("VariableDeclaration", ({ node, skipChildren, getText }) => {
       varType = "boolean";
     }
 
-    body.push({
-      name: getText(identifier),
-      type: varType,
+    identifiers.forEach((identifier) => {
+      body.push({
+        name: getText(identifier),
+        type: varType,
+      });
     });
   });
 
