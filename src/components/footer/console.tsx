@@ -21,9 +21,10 @@ function PromptInput() {
 }
 
 export function Console() {
-  const [logs, waiting] = ConsoleStore((state) => [
+  const [logs, waiting, modified] = ConsoleStore((state) => [
     state.logs,
     state.prompt.waiting,
+    state.logs.slice(-1)[0]?.modified,
   ]);
 
   return (
@@ -35,11 +36,15 @@ export function Console() {
             className={cn(log.type === "error" && "text-destructive")}
           >
             {log.value.replace(/( )$/, "\u00A0") || "\u00A0"}
-            {waiting && length - 1 === index ? <PromptInput /> : ""}
+            {waiting && length - 1 === index && !modified ? (
+              <PromptInput />
+            ) : (
+              ""
+            )}
           </p>
         );
       })}
-      {!logs.length && waiting ? <PromptInput /> : null}
+      {(!logs.length || modified) && waiting ? <PromptInput /> : null}
     </div>
   );
 }

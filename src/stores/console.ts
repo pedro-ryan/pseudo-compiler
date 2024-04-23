@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 interface IConsoleStore {
-  logs: Array<{ type: "info" | "error"; value: string }>;
-  log: (log: string) => void;
+  logs: Array<{ type: "info" | "error"; value: string; modified?: boolean }>;
+  log: (log: string, modified?: boolean) => void;
   error: (err: string) => void;
   clear: () => void;
 
@@ -19,7 +19,7 @@ interface IConsoleStore {
   };
 }
 
-const ConsoleStore = create<IConsoleStore>((set) => ({
+const ConsoleStore = create<IConsoleStore>((set, get) => ({
   logs: [],
   opened: false,
   prompt: {
@@ -53,12 +53,33 @@ const ConsoleStore = create<IConsoleStore>((set) => ({
         }
       };
 
+      const persistPrompt = (response: string) => {
+        if (!response) return;
+        const { log, logs } = get();
+
+        const lastLog = logs.slice(-1)[0];
+
+        if (!lastLog || lastLog.modified) {
+          return log(response, true);
+        }
+
+        lastLog.modified = true;
+        lastLog.value += response;
+
+        set((state) => ({
+          logs: [...state.logs.slice(0, -1), lastLog],
+        }));
+
+        console.log(get().logs);
+      };
+
       return new Promise((resolve) => {
         const unsubscribe = ConsoleStore.subscribe((state, oldState) => {
           if (state.prompt.response !== oldState.prompt.response) {
             const response = convertResponse(state.prompt.response);
 
             resolve(response);
+            persistPrompt(state.prompt.response);
             resetResponse();
             unsubscribe();
           }
@@ -79,13 +100,14 @@ const ConsoleStore = create<IConsoleStore>((set) => ({
   clear() {
     set({ logs: [] });
   },
-  log(log) {
+  log(log, modified) {
     set((state) => ({
       logs: [
         ...state.logs,
         {
           type: "info",
           value: log,
+          modified,
         },
       ],
     }));
