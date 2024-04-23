@@ -19,13 +19,13 @@ export const Logger = (log: unknown) => {
 const errors = {
   NotDefined: (prop?: string) =>
     `A variável "${prop}", não foi encontrada, verifique se você a declarou no bloco de variáveis`,
-  TypeError: (prop?: string) =>
-    `O valor que você está atribuindo na variável "${prop}" é diferente do que foi declarado antes para ela`,
+  TypeError: (prop?: string, valueType?: string, propType?: string) =>
+    `O valor do tipo "${valueType}" não pode ser atribuindo em uma variável do tipo "${propType}", e neste caso a variável "${prop}" é do tipo "${propType}"`,
 };
 
-function getError(errorMsgKey: keyof typeof errors, prop?: string) {
+function getError(errorMsgKey: keyof typeof errors, prop?: string[]) {
   const { error } = ConsoleStore.getState();
-  const errorMsg = errors[errorMsgKey](prop);
+  const errorMsg = errors[errorMsgKey](...(prop ?? []));
   error(errorMsg);
   throw new Error(errorMsg);
 }
@@ -33,25 +33,67 @@ function getError(errorMsgKey: keyof typeof errors, prop?: string) {
 export function runner(code: string) {
   const Prompt = ConsoleStore.getState().prompt.execute;
 
+  type Variables = Record<
+    string,
+    { type: string; value: string | number | boolean }
+  >;
+
   const RunnerThis = {
     Logger,
     Prompt,
-    variables: {},
+    variables: {} as Variables,
     checkVar(prop: string) {
       return {}.hasOwnProperty.call(this.variables, prop);
     },
     getVar(prop: keyof typeof this.variables) {
-      if (this.checkVar(prop)) return this.variables[prop];
-      getError("NotDefined", prop);
+      if (this.checkVar(prop)) return this.variables[prop].value;
+      getError("NotDefined", [prop]);
+    },
+    getVarType(prop: keyof typeof this.variables) {
+      if (this.checkVar(prop)) return this.variables[prop].type;
+      getError("NotDefined", [prop]);
     },
     setVar(prop: keyof typeof this.variables, value: unknown) {
-      const oldValue = this.getVar(prop);
+      if (!this.checkVar(prop)) return getError("NotDefined", [prop]);
+      const variable = this.variables[prop];
 
-      if (typeof value !== typeof oldValue) {
-        getError("TypeError", prop);
+      const translateType = (type: string, typeValue?: unknown) => {
+        switch (type) {
+          case "string":
+            return "Caractere";
+          case "boolean":
+            return "Logico";
+          case "float":
+            return "Real";
+          case "number":
+            if (Number.isInteger(typeValue)) return "Inteiro";
+            else return "Real";
+        }
+      };
+
+      const throwTypeError = () => {
+        const valueType = translateType(typeof value, value)!;
+        const variableType = translateType(variable.type)!;
+
+        return getError("TypeError", [prop, valueType, variableType]);
+      };
+
+      if (variable.type === "string" && typeof value !== "string") {
+        return throwTypeError();
+      }
+      if (variable.type === "boolean" && typeof value !== "boolean") {
+        return throwTypeError();
+      }
+      if (variable.type === "float" && typeof value !== "number") {
+        return throwTypeError();
+      }
+      if (variable.type === "number") {
+        if (typeof value !== "number" || !Number.isInteger(value)) {
+          return throwTypeError();
+        }
       }
 
-      this.variables[prop] = value as (typeof this.variables)[typeof prop];
+      this.variables[prop].value = value as string | number | boolean;
     },
   };
 

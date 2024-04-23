@@ -47,7 +47,7 @@ setGenerator<VariableDeclaration>("variables", ({ data }) => {
       if (v.type === "number") defaultValue = "0";
       if (v.type === "float") defaultValue = "0";
 
-      return `${v.name}:${defaultValue}`;
+      return `${v.name}:{ type: "${v.type}", value: ${defaultValue} }`;
     })
     .filter(Boolean);
 
