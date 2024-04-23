@@ -127,6 +127,15 @@ const Linter = linter((view) => {
   // let nodeBefore = "";
   let indentation = 0;
 
+  const expression = [
+    "String",
+    "Number",
+    "Float",
+    "VariableName",
+    "BinaryExpression",
+    "UnaryExpression",
+  ];
+
   syntaxTree(view.state)
     .cursor()
     .iterate(
@@ -153,9 +162,7 @@ const Linter = linter((view) => {
         }
 
         if (node.name === "EscrevaStatement") {
-          const result = ["String", "VariableName", "BinaryExpression"].some(
-            (v) => !!node.node.getChild(v)
-          );
+          const result = expression.some((v) => !!node.node.getChild(v));
           if (!result) {
             logError(
               node,

@@ -1,6 +1,13 @@
 import { Expression } from "@/compiler/interfaces";
 import { SyntaxNodeRef } from "@lezer/common";
 
+const UnaryExpression = (
+  node: SyntaxNodeRef,
+  getText: (node?: SyntaxNodeRef | undefined) => string
+) => {
+  return BinaryExpression(node, getText);
+};
+
 const BinaryExpression = (
   node: SyntaxNodeRef,
   getText: (node?: SyntaxNodeRef | undefined) => string
@@ -18,6 +25,11 @@ const BinaryExpression = (
     if (ignoreNodes.includes(binaryChild.name)) return true;
 
     let text = getText(binaryChild);
+    if (binaryChild.name === "UnaryExpression") {
+      text = UnaryExpression(binaryChild, getText).value;
+      return false;
+    }
+
     if (binaryChild.name === "ArithOp") {
       operation += text.replaceAll(/\^/g, "**");
       return false;
@@ -29,7 +41,6 @@ const BinaryExpression = (
     }
 
     if (binaryChild.name === "BooleanLiteral") {
-      console.log(text);
       if (text.toLowerCase() === "verdadeiro") {
         text = "true";
       } else {
@@ -62,6 +73,15 @@ export function getExpressions(
     if (child.name === "BinaryExpression") {
       const expression = BinaryExpression(child, getText);
       expressions.push(expression);
+
+      return false;
+    }
+
+    if (child.name === "UnaryExpression") {
+      expressions.push({
+        type: "operation",
+        value: UnaryExpression(child, getText).value,
+      });
 
       return false;
     }

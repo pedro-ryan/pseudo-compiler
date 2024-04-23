@@ -66,7 +66,7 @@ commaSep1<content> {
 }
 
 UnaryExpression {
-  !prefix LogicOp<"NÃO"> expression
+  !prefix (LogicOp<"NÃO"> | ArithOp<"+" | "-">) expression
 }
 
 BinaryExpression {
