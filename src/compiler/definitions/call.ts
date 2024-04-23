@@ -42,8 +42,9 @@ setGenerator<Call>("call", ({ data }) => {
   });
 
   if (data.assign) {
-    code += `this.setVar("${args[0]}", `;
-    args = [];
+    const variable = args[0];
+    code += `this.setVar("${variable}", `;
+    args = [`this.getVarType("${variable}")`];
   }
   if (data.async) code += "await ";
 

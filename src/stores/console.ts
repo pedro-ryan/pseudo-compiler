@@ -10,7 +10,9 @@ interface IConsoleStore {
   onOpenChange: (open: boolean) => void;
 
   prompt: {
-    execute: () => Promise<string>;
+    execute: (
+      convertType: "string" | "number" | "float" | "boolean"
+    ) => Promise<string | number | boolean>;
     respond: (response: string) => void;
     response: string;
     waiting: boolean;
@@ -21,7 +23,7 @@ const ConsoleStore = create<IConsoleStore>((set) => ({
   logs: [],
   opened: false,
   prompt: {
-    execute() {
+    execute(convertType) {
       const resetResponse = (waiting = false) => {
         set((state) => {
           return {
@@ -35,10 +37,28 @@ const ConsoleStore = create<IConsoleStore>((set) => ({
       };
       resetResponse(true);
 
+      const convertResponse = (response: string) => {
+        switch (convertType) {
+          case "string":
+            return response;
+          case "float":
+            return parseFloat(response);
+          case "number":
+            return parseInt(response);
+          case "boolean":
+            if (response.trim().toLowerCase().startsWith("v")) return true;
+            return false;
+          default:
+            return response;
+        }
+      };
+
       return new Promise((resolve) => {
         const unsubscribe = ConsoleStore.subscribe((state, oldState) => {
           if (state.prompt.response !== oldState.prompt.response) {
-            resolve(state.prompt.response);
+            const response = convertResponse(state.prompt.response);
+
+            resolve(response);
             resetResponse();
             unsubscribe();
           }
