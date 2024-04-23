@@ -12,7 +12,7 @@ const BinaryExpression = (
   node.node.firstChild?.cursor().iterate((binaryChild) => {
     if (ignoreNodes.includes(binaryChild.name)) return true;
 
-    const text = getText(binaryChild);
+    let text = getText(binaryChild);
     if (binaryChild.name === "ArithOp") {
       operation += text.replaceAll(/\^/g, "**");
       return false;
@@ -21,6 +21,15 @@ const BinaryExpression = (
     if (binaryChild.name === "VariableName") {
       operation += `$\{${text}}`;
       return false;
+    }
+
+    if (binaryChild.name === "BooleanLiteral") {
+      console.log(text);
+      if (text.toLowerCase() === "verdadeiro") {
+        text = "true";
+      } else {
+        text = "false";
+      }
     }
 
     operation += text;
