@@ -65,11 +65,14 @@ const BinaryExpression = (
 
 export function getExpressions(
   node: SyntaxNodeRef,
-  getText: (node?: SyntaxNodeRef | undefined) => string
+  getText: (node?: SyntaxNodeRef | undefined) => string,
+  skip?: string[]
 ): Expression[] {
   const expressions: Expression[] = [];
 
   node.node.firstChild?.cursor().iterate((child) => {
+    if (skip && skip.includes(child.name)) return false;
+
     if (child.name === "BinaryExpression") {
       const expression = BinaryExpression(child, getText);
       expressions.push(expression);

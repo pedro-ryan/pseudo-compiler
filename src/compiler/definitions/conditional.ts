@@ -45,10 +45,12 @@ setTransformer("CasoStatement", ({ childrenIn, node, getText }) => {
 
   return {
     type: "case",
-    expressions: getExpressions(node, getText),
+    expressions: getExpressions(node, getText, ["CasoBlock"]),
     body: [],
   };
 });
+
+setTransformer("CasoBlock", () => true);
 
 setGenerator<IfStatement>("if", ({ data, generate }) => {
   const expression = expressionParser(data.expression);

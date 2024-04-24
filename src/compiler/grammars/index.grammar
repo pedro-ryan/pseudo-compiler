@@ -118,7 +118,11 @@ EscolhaStatement {
 }
 
 CasoStatement {
-  kw<"Caso"> commaSep1<expression> (statement | expression)*
+  kw<"Caso"> commaSep1<expression> CasoBlock
+}
+
+CasoBlock {
+  (statement | expression)*
 }
 
 LogicOp<expr> { @specialize[@name={expr}]<Identifier, expr> }
