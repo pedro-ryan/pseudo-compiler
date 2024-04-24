@@ -7,6 +7,7 @@ import {
   CaseStatement,
   ElseStatement,
   IfStatement,
+  OutrocasoStatement,
   SwitchStatement,
 } from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
@@ -50,6 +51,15 @@ setTransformer("CasoStatement", ({ childrenIn, node, getText }) => {
   };
 });
 
+setTransformer("OutrocasoStatement", ({ childrenIn }) => {
+  childrenIn("body");
+
+  return {
+    type: "default",
+    body: [],
+  };
+});
+
 setTransformer("CasoBlock", () => true);
 
 setGenerator<IfStatement>("if", ({ data, generate }) => {
@@ -85,4 +95,8 @@ setGenerator<CaseStatement>("case", ({ data, generate }) => {
   code.push("break;");
 
   return code.join("\n");
+});
+
+setGenerator<OutrocasoStatement>("default", ({ data, generate }) => {
+  return [`default:`, generate(data.body)].join("\n");
 });

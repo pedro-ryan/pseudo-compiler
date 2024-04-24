@@ -114,11 +114,15 @@ SenaoStatement {
 }
 
 EscolhaStatement {
-  kw<"Escolha"> expression (CasoStatement)* kw<"Fimescolha">
+  kw<"Escolha"> expression (CasoStatement)* (OutrocasoStatement)? kw<"Fimescolha">
 }
 
 CasoStatement {
   kw<"Caso"> commaSep1<expression> CasoBlock
+}
+
+OutrocasoStatement {
+  kw<"Outrocaso"> CasoBlock
 }
 
 CasoBlock {

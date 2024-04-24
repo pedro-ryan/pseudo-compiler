@@ -21,7 +21,8 @@ export type TransformData =
   | IfStatement
   | ElseStatement
   | SwitchStatement
-  | CaseStatement;
+  | CaseStatement
+  | OutrocasoStatement;
 
 export type Code = {
   type: "code";
@@ -78,6 +79,11 @@ export type SwitchStatement = {
 export type CaseStatement = {
   type: "case";
   expressions: Expression[];
+  body: [];
+};
+
+export type OutrocasoStatement = {
+  type: "default";
   body: [];
 };
 
