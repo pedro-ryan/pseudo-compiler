@@ -133,7 +133,6 @@ const Linter = linter((view) => {
   };
 
   // let nodeBefore = "";
-  let indentation = 0;
 
   const expression = [
     "String",
@@ -153,8 +152,7 @@ const Linter = linter((view) => {
         //   ["last", "Enter", "Next"],
         //   [nodeBefore, node.name, next],
         // ]);
-        console.log(`${"  ".repeat(indentation)}entered: ${node.name}`);
-        indentation += 1;
+        console.groupCollapsed(`entered: ${node.name}`);
 
         if (node.name === "AlgoritmoDeclaration") {
           const Identifier = node.node.getChild("Identifier");
@@ -182,8 +180,8 @@ const Linter = linter((view) => {
         // nodeBefore = node.name;
       },
       (node) => {
-        indentation -= 1;
-        console.log(`${"  ".repeat(indentation)}leave: ${node.name}`);
+        console.log(`leave: ${node.name}`);
+        console.groupEnd();
       }
     );
 
