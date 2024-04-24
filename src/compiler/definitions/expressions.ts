@@ -31,6 +31,14 @@ const BinaryExpression = (
       return false;
     }
 
+    if (binaryChild.name === "XorExpression") {
+      const [N1, N2] = BinaryExpression(binaryChild, getText).value.split(
+        "XOU"
+      );
+      operation += `this.XOR(${N1},${N2})`;
+      return false;
+    }
+
     if (binaryChild.name === "UnaryExpression") {
       text = UnaryExpression(binaryChild, getText).value;
       return false;

@@ -9,6 +9,7 @@
   times @left,
   plus @left,
   rel @left,
+  xor @left,
   and @left,
   or @left,
   assign @right,
@@ -84,12 +85,17 @@ BinaryExpression {
   DivisionInt |
   expression !plus ArithOp<"+" | "-"> expression |
   expression !rel CompareOp expression |
+  XorExpression |
   expression !and LogicOp<"E"> expression |
   expression !or LogicOp<"OU"> expression
 }
 
 DivisionInt {
   expression !times ArithOp<"\\"> expression
+}
+
+XorExpression {
+  expression !xor LogicOp<"XOU"> expression
 }
 
 ParenthesizedExpression { "(" expression ")" }
