@@ -192,7 +192,7 @@ const parserWithMetadata = parser.configure({
   props: [
     styleTags({
       LineComment: t.lineComment,
-      "Algoritmo Se Então Fimse": t.keyword, // Palavras-chave
+      "Algoritmo Se Então Fimse Senão": t.keyword, // Palavras-chave
       "Inicio Fim Var": t.brace,
       "Identifier BooleanLiteral": t.variableName, // Nomes de algoritmos e variáveis
       String: t.string, // Strings

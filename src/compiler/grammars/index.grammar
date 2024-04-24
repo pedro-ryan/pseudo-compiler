@@ -3,6 +3,7 @@
 @skip { space | LineComment }
 
 @precedence {
+  else @right,
   prefix,
   exp @left,
   times @left,
@@ -104,7 +105,11 @@ LeiaStatement {
 }
 
 SeStatement {
-  kw<"Se"> expression kw<"Então"> (statement | expression)* kw<"Fimse">
+  kw<"Se"> expression kw<"Então"> (statement | expression)* (SenaoStatement)? kw<"Fimse">
+}
+
+SenaoStatement {
+  !else kw<"Senão"> (statement | expression)*
 }
 
 LogicOp<expr> { @specialize[@name={expr}]<Identifier, expr> }
