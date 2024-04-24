@@ -19,7 +19,8 @@ export type TransformData =
   | Call
   | Assignment
   | IfStatement
-  | ElseStatement;
+  | ElseStatement
+  | SwitchStatement;
 
 export type Code = {
   type: "code";
@@ -64,6 +65,12 @@ export type IfStatement = {
 
 export type ElseStatement = {
   type: "else";
+  body: [];
+};
+
+export type SwitchStatement = {
+  type: "switch";
+  expression: Expression;
   body: [];
 };
 

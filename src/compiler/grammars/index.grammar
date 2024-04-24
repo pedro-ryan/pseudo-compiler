@@ -22,7 +22,8 @@ statement[@isGroup=Statement] {
   AssignmentExpression |
   EscrevalStatement |
   LimpatelaStatement |
-  SeStatement
+  SeStatement |
+  EscolhaStatement
 }
 
 expression[@isGroup=Expression] {
@@ -110,6 +111,10 @@ SeStatement {
 
 SenaoStatement {
   !else kw<"Senão"> (statement | expression)*
+}
+
+EscolhaStatement {
+  kw<"Escolha"> expression kw<"Fimescolha">
 }
 
 LogicOp<expr> { @specialize[@name={expr}]<Identifier, expr> }
