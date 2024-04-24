@@ -4,6 +4,7 @@ import {
 } from "@/compiler/definitions/expressions";
 import { setGenerator } from "@/compiler/generator/context";
 import {
+  CaseStatement,
   ElseStatement,
   IfStatement,
   SwitchStatement,
@@ -39,6 +40,16 @@ setTransformer("EscolhaStatement", ({ childrenIn, node, getText }) => {
   };
 });
 
+setTransformer("CasoStatement", ({ childrenIn, node, getText }) => {
+  childrenIn("body");
+
+  return {
+    type: "case",
+    expressions: getExpressions(node, getText),
+    body: [],
+  };
+});
+
 setGenerator<IfStatement>("if", ({ data, generate }) => {
   const expression = expressionParser(data.expression);
 
@@ -57,6 +68,19 @@ setGenerator<SwitchStatement>("switch", ({ data, generate }) => {
   const expression = expressionParser(data.expression);
 
   const code = [`switch (${expression}) {`, generate(data.body), "}"];
+
+  return code.join("\n");
+});
+
+setGenerator<CaseStatement>("case", ({ data, generate }) => {
+  const code = [];
+
+  data.expressions.forEach((v) => {
+    code.push(`case ${expressionParser(v)}:`);
+  });
+
+  code.push(generate(data.body));
+  code.push("break;");
 
   return code.join("\n");
 });

@@ -114,7 +114,11 @@ SenaoStatement {
 }
 
 EscolhaStatement {
-  kw<"Escolha"> expression kw<"Fimescolha">
+  kw<"Escolha"> expression (CasoStatement)* kw<"Fimescolha">
+}
+
+CasoStatement {
+  kw<"Caso"> commaSep1<expression> (statement | expression)*
 }
 
 LogicOp<expr> { @specialize[@name={expr}]<Identifier, expr> }
