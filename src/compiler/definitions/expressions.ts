@@ -126,3 +126,16 @@ export function getExpressions(
 export function expressionVariable(text: string) {
   return text.replaceAll(/\${([^}]+)}/g, 'this.getVar("$1")');
 }
+
+export function expressionParser(v: Expression, assign?: boolean) {
+  if (v.type === "operation") {
+    return expressionVariable(v.value);
+  }
+
+  if (v.type === "var") {
+    if (assign) return v.name;
+    return `this.getVar("${v.name}")`;
+  }
+
+  return v.value;
+}

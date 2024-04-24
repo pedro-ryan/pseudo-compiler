@@ -1,7 +1,7 @@
 import { setGenerator } from "@/compiler/generator/context";
 import { Call } from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
-import { expressionVariable, getExpressions } from "./expressions";
+import { expressionParser, getExpressions } from "./expressions";
 
 setTransformer("EscrevaStatement", ({ skipChildren, node, getText }) => {
   skipChildren();
@@ -48,18 +48,7 @@ setTransformer("LeiaStatement", ({ skipChildren, node, getText }) => {
 setGenerator<Call>("call", ({ data }) => {
   let code = "";
 
-  let args = data.args.map((v) => {
-    if (v.type === "operation") {
-      return expressionVariable(v.value);
-    }
-
-    if (v.type === "var") {
-      if (data.assign) return v.name;
-      return `this.getVar("${v.name}")`;
-    }
-
-    return v.value;
-  });
+  let args = data.args.map((v) => expressionParser(v, data.assign));
 
   if (data.assign) {
     const variable = args[0];

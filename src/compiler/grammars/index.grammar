@@ -20,7 +20,8 @@ statement[@isGroup=Statement] {
   LeiaStatement |
   AssignmentExpression |
   EscrevalStatement |
-  LimpatelaStatement
+  LimpatelaStatement |
+  SeStatement
 }
 
 expression[@isGroup=Expression] {
@@ -100,6 +101,10 @@ LimpatelaStatement {
 
 LeiaStatement {
   kw<"Leia"> VariableName
+}
+
+SeStatement {
+  kw<"Se"> expression kw<"Então"> (statement | expression)* kw<"Fimse">
 }
 
 LogicOp<expr> { @specialize[@name={expr}]<Identifier, expr> }

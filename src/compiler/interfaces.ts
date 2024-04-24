@@ -17,7 +17,8 @@ export type TransformData =
   | AlgoritmoDeclaration
   | VariableDeclaration
   | Call
-  | Assignment;
+  | Assignment
+  | IfStatement;
 
 export type Code = {
   type: "code";
@@ -52,6 +53,12 @@ export type Assignment = {
   type: "assign";
   var: string;
   expression: Expression;
+};
+
+export type IfStatement = {
+  type: "if";
+  expression: Expression;
+  body: [];
 };
 
 export type Expression = ExpressionValue | Operation | Variable;
