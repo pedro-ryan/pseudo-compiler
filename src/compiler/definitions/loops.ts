@@ -3,7 +3,11 @@ import {
   getExpressions,
 } from "@/compiler/definitions/expressions";
 import { setGenerator } from "@/compiler/generator/context";
-import { ForStatement, WhileStatement } from "@/compiler/interfaces";
+import {
+  DoWhileStatement,
+  ForStatement,
+  WhileStatement,
+} from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
 
 setTransformer("ParaStatement", ({ childrenIn, node, getText }) => {
@@ -28,6 +32,16 @@ setTransformer("EnquantoStatement", ({ childrenIn, getText, node }) => {
 
   return {
     type: "while",
+    expression: getExpressions(node, getText, ["LoopBlock"])[0],
+    body: [],
+  };
+});
+
+setTransformer("RepitaStatement", ({ childrenIn, getText, node }) => {
+  childrenIn("body");
+
+  return {
+    type: "do_while",
     expression: getExpressions(node, getText, ["LoopBlock"])[0],
     body: [],
   };
@@ -62,6 +76,10 @@ setGenerator<WhileStatement>("while", ({ data, generate }) => {
   return code.join("\n");
 });
 
-// for ({var} = {inicial}; {var} <= {ate}; index += {passo ?? 1}) {
-//   ... body ...
-// }
+setGenerator<DoWhileStatement>("do_while", ({ data, generate }) => {
+  const expression = expressionParser(data.expression);
+
+  const code = [`do {`, generate(data.body), `} while (!(${expression}))`];
+
+  return code.join("\n");
+});

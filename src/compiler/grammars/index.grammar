@@ -25,7 +25,8 @@ statement[@isGroup=Statement] {
   SeStatement |
   EscolhaStatement |
   ParaStatement |
-  EnquantoStatement
+  EnquantoStatement |
+  RepitaStatement
 }
 
 expression[@isGroup=Expression] {
@@ -137,6 +138,10 @@ ParaStatement {
 
 EnquantoStatement {
   kw<"Enquanto"> expression kw<"Faça"> LoopBlock kw<"Fimenquanto">
+}
+
+RepitaStatement {
+  kw<"Repita"> LoopBlock kw<"Ate"> expression
 }
 
 LoopBlock {
