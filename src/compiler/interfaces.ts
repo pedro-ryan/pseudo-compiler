@@ -23,7 +23,8 @@ export type TransformData =
   | SwitchStatement
   | CaseStatement
   | OutrocasoStatement
-  | ForStatement;
+  | ForStatement
+  | WhileStatement;
 
 export type Code = {
   type: "code";
@@ -94,6 +95,12 @@ export type ForStatement = {
   initial: Expression;
   to: Expression;
   increment: Expression;
+  body: [];
+};
+
+export type WhileStatement = {
+  type: "while";
+  expression: Expression;
   body: [];
 };
 
