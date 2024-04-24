@@ -6,7 +6,7 @@ import { setGenerator } from "@/compiler/generator/context";
 import { ForStatement } from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
 
-setTransformer("ParaSatatement", ({ childrenIn, node, getText }) => {
+setTransformer("ParaStatement", ({ childrenIn, node, getText }) => {
   childrenIn("body");
 
   const [variable, initial, to, increment] = getExpressions(node, getText, [

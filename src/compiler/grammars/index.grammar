@@ -24,7 +24,7 @@ statement[@isGroup=Statement] {
   LimpatelaStatement |
   SeStatement |
   EscolhaStatement |
-  ParaSatatement
+  ParaStatement
 }
 
 expression[@isGroup=Expression] {
@@ -130,7 +130,7 @@ CasoBlock {
   (statement | expression)*
 }
 
-ParaSatatement {
+ParaStatement {
   kw<"Para"> VariableName kw<"de"> expression kw<"ate"> expression (kw<"passo"> expression)? kw<"Faça"> ParaBlock kw<"Fimpara">
 }
 
