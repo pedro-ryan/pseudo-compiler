@@ -31,13 +31,11 @@ setGenerator<Code>("code", ({ generate, data }) => {
 });
 
 setGenerator<AlgoritmoDeclaration>("function", ({ data, generate }) => {
-  const name = data.name.replaceAll(" ", "_");
-
   const code = [
-    `async function _${name}() {`,
+    `// Algoritmo: "${data.name}"`,
+    `(async function() {`,
     generate(data.body),
-    "}",
-    `_${name}.call(this)`,
+    "}.call(this));",
   ];
 
   return code.join("\n");
