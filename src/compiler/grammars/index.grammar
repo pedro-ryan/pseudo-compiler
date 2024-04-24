@@ -81,10 +81,15 @@ UnaryExpression {
 BinaryExpression {
   expression !exp ArithOp<"^"> expression |
   expression !times (ArithOp<"/"> | ArithOp<"%"> | ArithOp<"*">) expression |
+  DivisionInt |
   expression !plus ArithOp<"+" | "-"> expression |
   expression !rel CompareOp expression |
   expression !and LogicOp<"E"> expression |
   expression !or LogicOp<"OU"> expression
+}
+
+DivisionInt {
+  expression !times ArithOp<"\\"> expression
 }
 
 ParenthesizedExpression { "(" expression ")" }

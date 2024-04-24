@@ -27,6 +27,10 @@ const Clear = () => {
   ConsoleStore.getState().clear();
 };
 
+const DivInt = (n1: number, n2: number) => {
+  return parseInt(String(n1 / n2));
+};
+
 const errors = {
   NotDefined: (prop?: string) =>
     `A variável "${prop}", não foi encontrada, verifique se você a declarou no bloco de variáveis`,
@@ -54,6 +58,7 @@ export function runner(code: string) {
     LoggerNewLine,
     Clear,
     Prompt,
+    DivInt,
     variables: {} as Variables,
     checkVar(prop: string) {
       return {}.hasOwnProperty.call(this.variables, prop);

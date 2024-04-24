@@ -25,6 +25,13 @@ const BinaryExpression = (
     if (ignoreNodes.includes(binaryChild.name)) return true;
 
     let text = getText(binaryChild);
+    if (binaryChild.name === "DivisionInt") {
+      const N1 = getText(binaryChild.node.firstChild!);
+      const N2 = getText(binaryChild.node.lastChild!);
+      operation += `this.DivInt(${N1},${N2})`;
+      return false;
+    }
+
     if (binaryChild.name === "UnaryExpression") {
       text = UnaryExpression(binaryChild, getText).value;
       return false;
