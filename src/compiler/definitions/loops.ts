@@ -80,7 +80,9 @@ setGenerator<WhileStatement>("while", ({ data, generate }) => {
 });
 
 setGenerator<DoWhileStatement>("do_while", ({ data, generate }) => {
-  const expression = expressionParser(data.expression);
+  const expression = data.expression
+    ? expressionParser(data.expression)
+    : "false";
 
   const code = [`do {`, generate(data.body), `} while (!(${expression}))`];
 

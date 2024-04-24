@@ -142,7 +142,7 @@ EnquantoStatement {
 }
 
 RepitaStatement {
-  kw<"Repita"> LoopBlock kw<"Ate"> expression
+  kw<"Repita"> LoopBlock (kw<"Ate"> expression | kw<"Fimrepita">)
 }
 
 LoopBlock {
