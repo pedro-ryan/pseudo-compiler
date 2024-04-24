@@ -26,8 +26,7 @@ const BinaryExpression = (
 
     let text = getText(binaryChild);
     if (binaryChild.name === "DivisionInt") {
-      const N1 = getText(binaryChild.node.firstChild!);
-      const N2 = getText(binaryChild.node.lastChild!);
+      const [N1, N2] = BinaryExpression(binaryChild, getText).value.split("\\");
       operation += `this.DivInt(${N1},${N2})`;
       return false;
     }
