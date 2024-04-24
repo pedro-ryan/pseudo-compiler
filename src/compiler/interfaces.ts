@@ -22,7 +22,8 @@ export type TransformData =
   | ElseStatement
   | SwitchStatement
   | CaseStatement
-  | OutrocasoStatement;
+  | OutrocasoStatement
+  | ForStatement;
 
 export type Code = {
   type: "code";
@@ -84,6 +85,14 @@ export type CaseStatement = {
 
 export type OutrocasoStatement = {
   type: "default";
+  body: [];
+};
+
+export type ForStatement = {
+  type: "for";
+  variable: Expression;
+  initial: Expression;
+  to: Expression;
   body: [];
 };
 
