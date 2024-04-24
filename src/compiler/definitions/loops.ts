@@ -4,6 +4,7 @@ import {
 } from "@/compiler/definitions/expressions";
 import { setGenerator } from "@/compiler/generator/context";
 import {
+  BreakStatement,
   DoWhileStatement,
   ForStatement,
   WhileStatement,
@@ -47,6 +48,8 @@ setTransformer("RepitaStatement", ({ childrenIn, getText, node }) => {
   };
 });
 
+setTransformer("Interrompa", () => ({ type: "break" }));
+
 setTransformer("LoopBlock", () => true);
 
 setGenerator<ForStatement>("for", ({ data, generate }) => {
@@ -83,3 +86,5 @@ setGenerator<DoWhileStatement>("do_while", ({ data, generate }) => {
 
   return code.join("\n");
 });
+
+setGenerator<BreakStatement>("break", () => "break;");

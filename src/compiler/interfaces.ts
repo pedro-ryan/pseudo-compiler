@@ -25,7 +25,8 @@ export type TransformData =
   | OutrocasoStatement
   | ForStatement
   | WhileStatement
-  | DoWhileStatement;
+  | DoWhileStatement
+  | BreakStatement;
 
 export type Code = {
   type: "code";
@@ -109,6 +110,10 @@ export type DoWhileStatement = {
   type: "do_while";
   expression: Expression;
   body: [];
+};
+
+export type BreakStatement = {
+  type: "break";
 };
 
 export type Expression = ExpressionValue | Operation | Variable;

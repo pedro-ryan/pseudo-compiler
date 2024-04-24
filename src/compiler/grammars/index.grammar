@@ -26,7 +26,8 @@ statement[@isGroup=Statement] {
   EscolhaStatement |
   ParaStatement |
   EnquantoStatement |
-  RepitaStatement
+  RepitaStatement |
+  kw<"Interrompa">
 }
 
 expression[@isGroup=Expression] {
