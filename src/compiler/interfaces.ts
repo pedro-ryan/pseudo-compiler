@@ -93,6 +93,7 @@ export type ForStatement = {
   variable: Expression;
   initial: Expression;
   to: Expression;
+  increment: Expression;
   body: [];
 };
 

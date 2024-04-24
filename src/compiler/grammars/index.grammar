@@ -131,7 +131,7 @@ CasoBlock {
 }
 
 ParaSatatement {
-  kw<"Para"> VariableName kw<"de"> expression kw<"ate"> expression kw<"Faça"> ParaBlock kw<"Fimpara">
+  kw<"Para"> VariableName kw<"de"> expression kw<"ate"> expression (kw<"passo"> expression)? kw<"Faça"> ParaBlock kw<"Fimpara">
 }
 
 ParaBlock {
