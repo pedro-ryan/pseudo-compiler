@@ -89,7 +89,7 @@ export function runner(code: string) {
           case "float":
             return "Real";
           case "number":
-            if (Number.isInteger(typeValue)) return "Inteiro";
+            if (Number.isInteger(typeValue) || !typeValue) return "Inteiro";
             else return "Real";
         }
       };
