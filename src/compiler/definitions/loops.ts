@@ -15,7 +15,7 @@ setTransformer("ParaStatement", ({ childrenIn, node, getText }) => {
   childrenIn("body");
 
   const [variable, initial, to, increment] = getExpressions(node, getText, [
-    "ParaBlock",
+    "LoopBlock",
   ]);
 
   return {
