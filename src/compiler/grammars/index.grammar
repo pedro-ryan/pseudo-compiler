@@ -145,7 +145,7 @@ CasoBlock {
 }
 
 ParaStatement {
-  kw<"Para"> VariableName kw<"de"> expression kw<"ate"> expression (kw<"passo"> expression)? kw<"Faça"> LoopBlock kw<"Fimpara">
+  kw<"Para"> VariableName (kw<"de"> | "<-") expression kw<"ate"> expression (kw<"passo"> expression)? kw<"faça"> LoopBlock kw<"Fimpara">
 }
 
 EnquantoStatement {
