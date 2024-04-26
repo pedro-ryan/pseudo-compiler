@@ -39,14 +39,24 @@ expression[@isGroup=Expression] {
   VariableName |
   ParenthesizedExpression |
   UnaryExpression |
-  BinaryExpression
+  BinaryExpression |
+  VetorRef
 }
 
 Type {
   kw<"Caractere"> |
   kw<"Inteiro"> |
   kw<"Real"> |
-  kw<"Logico">
+  kw<"Logico"> |
+  Vetor
+}
+
+Vetor {
+  kw<"Vetor"> "[" VetorInterval ("," VetorInterval)? "]" kw<"de"> Type
+}
+
+VetorInterval {
+  Number ".." Number
 }
 
 AlgoritmoDeclaration { 
@@ -62,10 +72,11 @@ VariableDefinition {
 }
 
 AssignmentExpression {
-  VariableName !assign "<-" expression
+  (VariableName | VetorRef) !assign "<-" expression
 }
 
 VariableName { Identifier }
+VetorRef { VariableName"["commaSep1<expression>"]" }
 
 commaSep<content> {
   (content ("," content)*)?

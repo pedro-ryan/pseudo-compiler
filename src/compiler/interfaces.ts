@@ -44,10 +44,17 @@ export type VariableDeclaration = {
   body: VariableDefinition[];
 };
 
-export type VariableDefinition = {
+export type VariableDefinition = GenericVariable | VectorVariable;
+
+export type GenericVariable = {
   name: string;
   type: "string" | "number" | "float" | "boolean";
 };
+
+export interface VectorVariable extends GenericVariable {
+  subType: "vector" | "matriz";
+  validIndex?: number[][];
+}
 
 export type Call = {
   type: "call";
@@ -59,7 +66,7 @@ export type Call = {
 
 export type Assignment = {
   type: "assign";
-  var: string;
+  var: Variable | Vector;
   expression: Expression;
 };
 
@@ -116,7 +123,7 @@ export type BreakStatement = {
   type: "break";
 };
 
-export type Expression = ExpressionValue | Operation | Variable;
+export type Expression = ExpressionValue | Operation | Variable | Vector;
 
 export type ExpressionValue = {
   type: "value";
@@ -131,4 +138,11 @@ export type Operation = {
 export type Variable = {
   type: "var";
   name: string;
+};
+
+export type Vector = {
+  type: "vector";
+  name: string;
+  y: Expression;
+  x: Expression;
 };

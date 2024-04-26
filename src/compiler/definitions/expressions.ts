@@ -129,6 +129,25 @@ export function getExpressions(
       });
     }
 
+    if (child.name === "VetorRef") {
+      const values = getExpressions(child, getText);
+
+      const [name, VectorY, VectorX] = values;
+
+      if (name.type !== "var") {
+        return false;
+      }
+
+      expressions.push({
+        type: "vector",
+        name: name.name,
+        y: VectorY,
+        x: VectorX,
+      });
+
+      return false;
+    }
+
     if (child.name === "Identifier") {
       expressions.push({
         type: "var",
@@ -144,7 +163,10 @@ export function expressionVariable(text: string) {
   return text.replaceAll(/\${([^}]+)}/g, 'this.getVar("$1")');
 }
 
-export function expressionParser(v: Expression, assign?: boolean) {
+export function expressionParser(
+  v: Expression,
+  assign?: boolean
+): string | number | boolean {
   if (v.type === "operation") {
     return expressionVariable(v.value);
   }
@@ -152,6 +174,12 @@ export function expressionParser(v: Expression, assign?: boolean) {
   if (v.type === "var") {
     if (assign) return v.name;
     return `this.getVar("${v.name}")`;
+  }
+
+  if (v.type === "vector") {
+    const VectorY = expressionParser(v.y);
+    const VectorX = v.x ? expressionParser(v.x) : undefined;
+    return `this.getVector("${v.name}", ${VectorY}, ${VectorX})`;
   }
 
   return v.value;

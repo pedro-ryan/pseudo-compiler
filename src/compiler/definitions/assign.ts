@@ -1,19 +1,18 @@
 import { setGenerator } from "@/compiler/generator/context";
-import { Assignment } from "@/compiler/interfaces";
+import { Assignment, Variable, Vector } from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
-import { expressionVariable, getExpressions } from "./expressions";
+import { expressionParser, getExpressions } from "./expressions";
 
 setTransformer("AssignmentExpression", ({ skipChildren, node, getText }) => {
   skipChildren();
 
-  const variableNode = node.node.getChild("VariableName");
-  if (!variableNode) return false;
+  const [name, expression] = getExpressions(node, getText);
 
-  const expression = getExpressions(node, getText).slice(-1)[0];
+  if (!name || !["var", "vector"].includes(name.type)) return false;
 
   return {
     type: "assign",
-    var: getText(variableNode),
+    var: name as Vector | Variable,
     expression,
   };
 });
@@ -24,8 +23,14 @@ setGenerator<Assignment>("assign", ({ data }) => {
   if (data.expression.type === "var") {
     value = `this.getVar("${data.expression.name}")`;
   } else {
-    value = expressionVariable(`${data.expression.value}`);
+    value = `${expressionParser(data.expression)}`;
   }
 
-  return `this.setVar("${data.var}", ${value})\n`;
+  if (data.var.type === "vector") {
+    const VectorY = expressionParser(data.var.y);
+    const VectorX = data.var.x ? expressionParser(data.var.x) : undefined;
+    return `this.setVector(["${data.var.name}", ${VectorY}, ${VectorX}], ${value})\n`;
+  }
+
+  return `this.setVar("${data.var.name}", ${value})\n`;
 });

@@ -141,6 +141,7 @@ const Linter = linter((view) => {
     "VariableName",
     "BinaryExpression",
     "UnaryExpression",
+    "VetorRef",
   ];
 
   syntaxTree(view.state)
