@@ -3,7 +3,7 @@ import { VariableDeclaration, VariableDefinition } from "@/compiler/interfaces";
 import { setTransformer } from "@/compiler/transform/context";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
 
-function getVectorIndex(
+function getVectorValidIndex(
   nodes: SyntaxNode[],
   getText: (node?: SyntaxNodeRef) => string
 ) {
@@ -38,7 +38,7 @@ setTransformer("VariableDeclaration", ({ node, skipChildren, getText }) => {
 
     if (type.name === "Vetor") {
       const intervals = type.getChildren("VetorInterval");
-      validIndex = getVectorIndex(intervals, getText);
+      validIndex = getVectorValidIndex(intervals, getText);
       if (intervals.length >= 2) {
         subType = "matriz";
       } else {

@@ -39,7 +39,9 @@ const XOR = (x: unknown, y: unknown) => {
 const errors = {
   NotDefined: (prop?: string, vectorY?: string, vectorX?: string) => {
     if (vectorY) {
-      prop = `${prop}[${vectorY}${vectorX ? `, ${vectorX}` : ""}]`;
+      prop += `[${vectorY}`;
+      if (vectorX !== "undefined") prop += `, ${vectorX}`;
+      prop += "]";
     }
     return `A variável "${prop}", não foi encontrada, verifique se você a declarou no bloco de variáveis`;
   },
@@ -53,6 +55,16 @@ const errors = {
   },
   MatrizNeedX: (prop?: string) => {
     return `a variável "${prop}" é uma matriz sendo assim precisa de dois indices, por exemplo: ${prop}[0,0]`;
+  },
+  VectorIndexInvalid: (
+    prop?: string,
+    vectorY?: string,
+    vectorX?: string,
+    errorIn?: string
+  ) => {
+    return `o índice "${
+      errorIn == "y" ? vectorY : vectorX
+    }" passado para a variável "${prop}" é invalido, verifique se ele está entre o(s) intervalo(s) valore(s) predefinidos anteriormente no bloco de variáveis`;
   },
 };
 
@@ -96,7 +108,9 @@ export function runner(code: string) {
       ) {
         return getError("VectorIndexNumber", [prop]);
       }
-      if (!this.checkVar(prop)) return getError("NotDefined", [prop]);
+      if (!this.checkVar(prop)) {
+        return getError("NotDefined", [prop, `${vectorY}`, `${vectorX}`]);
+      }
 
       const variable = this.variables[prop];
       if (!variable.validIndex || !variable.subType) return false;
@@ -105,15 +119,28 @@ export function runner(code: string) {
         return getError("NotMatriz", [prop]);
       }
 
-      const validY = variable.validIndex[0].indexOf(vectorY) > -1;
-
-      if (!validY || variable.subType === "vector") return validY;
-
       if (variable.subType === "matriz" && typeof vectorX === "undefined") {
         return getError("MatrizNeedX", [prop]);
       }
 
-      return variable.validIndex[1].indexOf(vectorX) > -1;
+      const [Y, X] = this.getVectorIndex(prop, vectorY, vectorX);
+
+      const validY = typeof Y === "number" && Y > -1;
+      const validX = typeof X === "number" && X > -1;
+
+      if (!validY || (variable.subType === "matriz" && !validX)) {
+        console.log(validY);
+        const errorIn = !validY ? "y" : "x";
+        getError("VectorIndexInvalid", [
+          prop,
+          `${vectorY}`,
+          `${vectorX}`,
+          errorIn,
+        ]);
+      }
+
+      if (variable.subType === "vector") return validY;
+      return validX;
     },
     checkVar(prop: string) {
       return {}.hasOwnProperty.call(this.variables, prop);
@@ -159,13 +186,29 @@ export function runner(code: string) {
 
       return true;
     },
+    getVectorIndex(prop: string, vectorY: number, vectorX: number) {
+      const Y = this.variables[prop].validIndex?.[0]?.indexOf(vectorY);
+      const X = this.variables[prop].validIndex?.[1]?.indexOf(vectorX);
+      if (Y == undefined || Y < 0 || (X && X < 0)) {
+        const errorIn = Y! < 0 ? "y" : "x";
+        getError("VectorIndexInvalid", [
+          prop,
+          `${vectorY}`,
+          `${vectorX}`,
+          errorIn,
+        ]);
+      }
+
+      return [Y, X];
+    },
     getVector(
       prop: keyof typeof this.variables,
       vectorY: number,
       vectorX: number
     ) {
       if (this.checkVector([prop, vectorY, vectorX])) {
-        return get(this.variables[prop].value as object, [vectorY, vectorX]);
+        const [Y, X] = this.getVectorIndex(prop, vectorY, vectorX);
+        return get(this.variables[prop].value as object, [Y!, X!]);
       }
 
       getError("NotDefined", [prop, `${vectorY}`, `${vectorX}`]);
@@ -188,9 +231,8 @@ export function runner(code: string) {
 
       if (!this.checkType(prop, value)) return;
 
-      const setPath = ["value", vectorY, vectorX].filter(
-        (v) => typeof v !== "undefined"
-      );
+      const [Y, X] = this.getVectorIndex(prop, vectorY, vectorX);
+      const setPath = ["value", Y!, X!].filter((v) => typeof v !== "undefined");
       set(this.variables[prop], setPath, value);
     },
     setVar(prop: keyof typeof this.variables, value: unknown) {
