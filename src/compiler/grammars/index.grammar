@@ -160,11 +160,11 @@ ParaStatement {
 }
 
 EnquantoStatement {
-  kw<"Enquanto"> expression kw<"Faça"> LoopBlock kw<"Fimenquanto">
+  kw<"Enquanto"> expression kw<"faça"> LoopBlock kw<"Fimenquanto">
 }
 
 RepitaStatement {
-  kw<"Repita"> LoopBlock (kw<"Ate"> expression | kw<"Fimrepita">)
+  kw<"Repita"> LoopBlock (kw<"ate"> expression | kw<"Fimrepita">)
 }
 
 LoopBlock {
